@@ -1,0 +1,25 @@
+@import "tailwindcss";
+@import '../../vendor/filament/filament/resources/css/theme.css';
+@import '../../vendor/backstage/fields/resources/css/fields.css';
+
+@source '../../src/**/*.php';
+@source '../../resources/views/**/*.blade.php';
+@source '../../vendor/filament/**/*.blade.php';
+@source '../../vendor/saade/filament-adjacency-list/resources/views/**/*.blade.php';
+
+/* Force include saade classes */
+.fi-adjacency-list-item {
+    @apply flex justify-between w-full bg-white border border-gray-300 rounded-lg;
+}
+
+.fi-adjacency-list-wrapper {
+    @apply w-full;
+}
+
+.fi-adjacency-list-tree {
+    @apply w-full;
+}
+
+.fi-adjacency-list-root {
+    @apply w-full;
+}
