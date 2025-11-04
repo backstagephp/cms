@@ -1,0 +1,17 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 1
+    paths:
+        - src
+        - config
+        - database
+    tmpDir: build/phpstan
+    checkOctaneCompatibility: true
+    checkModelProperties: true
+    scanFiles:
+    - %currentWorkingDirectory%/vendor/saade/filament-adjacency-list/src/Forms/Components/AdjacencyList.php
+    ignoreErrors:
+    -
+        message: "#^Called 'env' outside of the config directory which returns null when the config is cached, use 'config'.$#"

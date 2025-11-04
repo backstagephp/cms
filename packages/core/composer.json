@@ -1,0 +1,124 @@
+{
+    "name": "backstage/cms",
+    "description": "",
+    "keywords": [
+        "backstage",
+        "cms",
+        "vormkracht10",
+        "filament",
+        "laravel"
+    ],
+    "homepage": "https://github.com/backstagephp/cms",
+    "support": {
+        "issues": "https://github.com/backstagephp/cms/issues",
+        "source": "https://github.com/backstagephp/cms"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mark van Eijk",
+            "email": "mark@backstagephp.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Mathieu de Ruiter",
+            "email": "mathieu@backstagephp.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Bas van Dinther",
+            "email": "bas@backstagephp.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "backstage/fields": "^0.8.0",
+        "backstage/media": "^0",
+        "backstage/redirects": "dev-release/1.x",
+        "backstage/translations": "^0.4.1",
+        "baspa/laravel-timezones": "^1.2",
+        "codewithdennis/filament-select-tree": "^4.0",
+        "filament/filament": "^4.0",
+        "nette/php-generator": "^4.1",
+        "saade/filament-adjacency-list": "^4.0",
+        "spatie/laravel-package-tools": "^1.18",
+        "spatie/once": "^3.1",
+        "spatie/schema-org": "^3.23",
+        "staudenmeir/laravel-adjacency-list": "^1.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^8.0",
+        "orchestra/testbench": "^9.0",
+        "pestphp/pest": "^3.7",
+        "pestphp/pest-plugin-arch": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Backstage\\": "src/",
+            "Backstage\\Tests\\": "tests",
+            "Backstage\\Database\\Factories\\": "database/factories/",
+            "Backstage\\Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Backstage\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Backstage\\BackstageServiceProvider",
+                "Backstage\\BackstagePanelProvider"
+            ],
+            "aliases": {
+                "Backstage": "Backstage\\Facades\\Backstage"
+            }
+        }
+    },
+    "repositories": {
+        "backstage/fields": {
+            "type": "git",
+            "url": "git@github.com:backstagephp/fields.git"
+        },
+        "backstage/media": {
+            "type": "git",
+            "url": "git@github.com:backstagephp/media.git"
+        },
+        "backstage/redirects": {
+            "type": "git",
+            "url": "git@github.com:backstagephp/redirects.git"
+        },
+        "backstage/laravel-redirects": {
+            "type": "git",
+            "url": "git@github.com:backstagephp/laravel-redirects.git"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
