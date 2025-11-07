@@ -52,4 +52,42 @@ If the project maintainer has any additional requirements, you will find them li
 
 - **Send coherent history** - Make sure each individual commit in your pull request is meaningful. If you had to make multiple intermediate commits while developing, please [squash them](https://www.git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages) before submitting.
 
+
+## Local development
+
+To add a subtree:
+```bash
+git subtree add --prefix packages/media git@github.com:backstagephp/Media.git main --squash
+```
+
+To pull a subtree (should not be needed!):
+```bash
+git subtree pull --prefix packages/media git@github.com:backstagephp/Media.git main --squash
+```
+
+Follow these steps to contribute with local development.
+
+1. Fork [the Github repository](https://github.com/backstagephp/cms) to your Github Account.
+2. Create a Laravel app locally (e.g. `laravel new my-app`)
+3. Clone your fork into your Laravel app's root directory.
+4. In the `/cms` directory, create a branch for your fix, e.g. `fix/stage-lights`.
+
+Install the packages in your app's `composer.json`:c0m
+
+```json
+{
+    "require": {
+        "backstage/cms": "*"
+    },
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "cms/packages/*",
+            "canonical": false
+        }
+    ]
+}
+```
+
 **Happy coding**!

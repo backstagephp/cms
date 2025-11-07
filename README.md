@@ -8,8 +8,8 @@
 ![Test](https://github.com/backstagephp/core/actions/workflows/run-tests.yml/badge.svg)
 ![Fresh Laravel install](https://github.com/backstagephp/core/actions/workflows/setup-in-laravel.yml/badge.svg)
 ![PHPStan](https://github.com/backstagephp/core/actions/workflows/phpstan.yml/badge.svg)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/backstagephp/core.svg?style=flat-square)](https://packagist.org/packages/backstagephp/core)
-[![Total Downloads](https://img.shields.io/packagist/dt/backstagephp/core.svg?style=flat-square)](https://packagist.org/packages/backstagephp/core)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/backstagephp/cms.svg?style=flat-square)](https://packagist.org/packages/backstagephp/cms)
+[![Total Downloads](https://img.shields.io/packagist/dt/backstagephp/cms.svg?style=flat-square)](https://packagist.org/packages/backstagephp/cms)
 
 Backstage is the CMS for building the modern web. Made with Laravel and Filament.
 
@@ -19,33 +19,6 @@ You can install the package via composer in your (new) [Laravel app](https://lar
 
 ```bash
 composer require backstage/cms
-```
-
-Note: For now you may have to update composer.json to:
-```json
-    "repositories": {
-        "laravel-redirects": {
-            "type": "vcs",
-            "url": "git@github.com:backstagephp/laravel-redirects.git"
-        },
-        "filament-redirects": {
-            "type": "vcs",
-            "url": "git@github.com:backstagephp/redirects.git"
-        },
-        "backstage/media": {
-            "type": "vcs",
-            "url": "git@github.com:backstagephp/media.git"
-        },
-        "backstage/fields": {
-            "type": "vcs",
-            "url": "git@github.com:backstagephp/fields.git"
-        },
-        "backstage": {
-            "type": "vcs",
-            "url": "git@github.com:backstagephp/core.git"
-        }
-    },
-    "minimum-stability": "dev",
 ```
 
 To get started quickly, use the backstage:install command:
@@ -91,16 +64,6 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Contributing
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
-
-To add a subtree:
-```bash
-git subtree add --prefix packages/media git@github.com:backstagephp/Media.git main --squash
-```
-
-To pull a subtree (should not be needed!):
-```bash
-git subtree pull --prefix packages/media git@github.com:backstagephp/Media.git main --squash
-```
 
 ## Security Vulnerabilities
 
