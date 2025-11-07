@@ -68,7 +68,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Backstage\\": "src/",
+            "Backstage\\": [
+                "packages/core/src/"
+            ],
             "Backstage\\Tests\\": "tests",
             "Backstage\\Fields\\": "packages/fields/src/",
             "Backstage\\Media\\": "packages/media/src/",
@@ -76,7 +78,7 @@
             "Backstage\\Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "src/helpers.php"
+            "packages/core/src/helpers.php"
         ]
     },
     "autoload-dev": {
@@ -112,16 +114,6 @@
                 "Fields": "Backstage\\Fields\\Facades\\Fields",
                 "Media": "Backstage\\Media\\Facades\\Media"
             }
-        }
-    },
-    "repositories": {
-        "backstage/redirects": {
-            "type": "git",
-            "url": "git@github.com:backstagephp/redirects.git"
-        },
-        "backstage/laravel-redirects": {
-            "type": "git",
-            "url": "git@github.com:backstagephp/laravel-redirects.git"
         }
     },
     "minimum-stability": "dev",
