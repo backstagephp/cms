@@ -1,6 +1,9 @@
 name: monorepo-split
 
 on:
+  commit:
+    branches:
+      - main
   push:
     tags: '*'
 
@@ -13,7 +16,6 @@ jobs:
         package:
           - fields
           - media
-          - core
     steps:
       - uses: actions/checkout@v3
       - id: previous-tag
