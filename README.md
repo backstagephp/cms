@@ -97,6 +97,11 @@ To add a subtree:
 git subtree add --prefix packages/media git@github.com:backstagephp/Media.git main --squash
 ```
 
+To pull a subtree (should not be needed!):
+```bash
+git subtree pull --prefix packages/media git@github.com:backstagephp/Media.git main --squash
+```
+
 ## Security Vulnerabilities
 
 Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
