@@ -20,11 +20,8 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        env:
-          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{secrets.COMPOSER_AUTH}}"} }' # [tl! **]
         run: |
           composer config minimum-stability ${{ matrix.stability }}
-          composer config repositories.backstage vcs git@github.com:backstagephp/cms.git
           composer install --no-interaction --dev
 
       - name: Run PHPStan
