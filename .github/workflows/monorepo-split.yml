@@ -1,7 +1,7 @@
 name: monorepo-split
 
 on:
-  commit:
+  push:
     tags: '*'
 
 jobs:
