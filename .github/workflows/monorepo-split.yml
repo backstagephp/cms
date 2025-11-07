@@ -1,8 +1,8 @@
 name: monorepo-split
 
 on:
-  push:
-    branches: [main]
+  commit:
+    tags: '*'
 
 jobs:
   split-monorepo:
