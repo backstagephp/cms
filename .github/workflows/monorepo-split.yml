@@ -2,7 +2,6 @@ name: monorepo-split
 
 on:
   push:
-    branches: [main]
     tags: '*'
 
 jobs:
