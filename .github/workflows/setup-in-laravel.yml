@@ -48,7 +48,8 @@ jobs:
 
       - name: Prepare and install backstage
         env:
-          CACHE_DRIVER: file
+          CACHE_DRIVER: array
+          CACHE_STORE: array
           DB_CONNECTION: mysql
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
