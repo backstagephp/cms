@@ -73,6 +73,7 @@
             ],
             "Backstage\\Tests\\": "tests",
             "Backstage\\Fields\\": "packages/fields/src/",
+            "Backstage\\Fields\\Database\\Factories\\": "packages/fields/database/factories/",
             "Backstage\\Media\\": "packages/media/src/",
             "Backstage\\Database\\Factories\\": "database/factories/",
             "Backstage\\Database\\Seeders\\": "database/seeders/"
