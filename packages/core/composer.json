@@ -101,24 +101,6 @@
             }
         }
     },
-    "repositories": {
-        "backstage/fields": {
-            "type": "git",
-            "url": "git@github.com:backstagephp/fields.git"
-        },
-        "backstage/media": {
-            "type": "git",
-            "url": "git@github.com:backstagephp/media.git"
-        },
-        "backstage/redirects": {
-            "type": "git",
-            "url": "git@github.com:backstagephp/redirects.git"
-        },
-        "backstage/laravel-redirects": {
-            "type": "git",
-            "url": "git@github.com:backstagephp/laravel-redirects.git"
-        }
-    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

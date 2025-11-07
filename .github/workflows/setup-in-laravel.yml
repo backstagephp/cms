@@ -60,4 +60,4 @@ jobs:
           cd theater
           composer config minimum-stability dev
           composer require backstage/cms:dev-${{ steps.extract_branch.outputs.branch }} --no-interaction
-          php artisan backstage:install
+          php artisan backstage:install --no-interaction
