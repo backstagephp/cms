@@ -59,11 +59,14 @@ class Repeater extends Base implements FieldContract
     {
         $input = self::applyDefaultSettings(Input::make($name), $field);
 
+        $isReorderable = $field->config['reorderable'] ?? self::getDefaultConfig()['reorderable'];
+        $isReorderableWithButtons = $field->config['reorderableWithButtons'] ?? self::getDefaultConfig()['reorderableWithButtons'];
+
         $input = $input->label($field->name ?? self::getDefaultConfig()['label'] ?? null)
             ->addActionLabel($field->config['addActionLabel'] ?? self::getDefaultConfig()['addActionLabel'])
             ->addable($field->config['addable'] ?? self::getDefaultConfig()['addable'])
             ->deletable($field->config['deletable'] ?? self::getDefaultConfig()['deletable'])
-            ->reorderable($field->config['reorderable'] ?? self::getDefaultConfig()['reorderable'])
+            ->reorderable($isReorderable)
             ->collapsible($field->config['collapsible'] ?? self::getDefaultConfig()['collapsible'])
             ->cloneable($field->config['cloneable'] ?? self::getDefaultConfig()['cloneable'])
             ->columns($field->config['columns'] ?? self::getDefaultConfig()['columns']);
@@ -72,8 +75,32 @@ class Repeater extends Base implements FieldContract
             $input = $input->compact();
         }
 
-        if ($field->config['reorderableWithButtons'] ?? self::getDefaultConfig()['reorderableWithButtons']) {
+        if ($isReorderableWithButtons) {
             $input = $input->reorderableWithButtons();
+        }
+
+        // Fix for Filament Forms v4.2.0 reorder bug
+        // The default reorder action has a bug where array_flip() creates integer values
+        // that get merged with the state array, causing type errors
+        if ($isReorderable || $isReorderableWithButtons) {
+            $input = $input->reorderAction(function ($action) {
+                return $action->action(function (array $arguments, Input $component): void {
+                    $currentState = $component->getRawState();
+                    $newOrder = $arguments['items'];
+
+                    // Reorder the items based on the new order
+                    $reorderedItems = [];
+                    foreach ($newOrder as $oldIndex) {
+                        if (isset($currentState[$oldIndex])) {
+                            $reorderedItems[] = $currentState[$oldIndex];
+                        }
+                    }
+
+                    $component->rawState($reorderedItems);
+                    $component->callAfterStateUpdated();
+                    $component->shouldPartiallyRenderAfterActionsCalled() ? $component->partiallyRender() : null;
+                });
+            });
         }
 
         if ($field && ! $field->relationLoaded('children')) {

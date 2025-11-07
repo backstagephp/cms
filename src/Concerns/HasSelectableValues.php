@@ -288,7 +288,23 @@ trait HasSelectableValues
                                         Select::make('relationKey')
                                             ->label(__('Key Column'))
                                             ->helperText(__('The column to use as the unique identifier/value for each option'))
-                                            ->options(fn (Get $get) => $get('relationKey_options') ?? [])
+                                            ->options(function (Get $get) {
+                                                $resource = $get('resource');
+                                                if (! $resource) {
+                                                    return [];
+                                                }
+
+                                                $model = static::resolveResourceModel($resource);
+                                                if (! $model) {
+                                                    return [];
+                                                }
+
+                                                $columns = Schema::getColumnListing($model->getTable());
+
+                                                return collect($columns)->mapWithKeys(function ($column) {
+                                                    return [$column => Str::title($column)];
+                                                })->toArray();
+                                            })
                                             ->searchable()
                                             ->visible(fn (Get $get): bool => ! empty($get('resource')))
                                             ->required(
@@ -298,7 +314,23 @@ trait HasSelectableValues
                                         Select::make('relationValue')
                                             ->label(__('Display Column'))
                                             ->helperText(__('The column to use as the display text/label for each option'))
-                                            ->options(fn (Get $get) => $get('relationValue_options') ?? [])
+                                            ->options(function (Get $get) {
+                                                $resource = $get('resource');
+                                                if (! $resource) {
+                                                    return [];
+                                                }
+
+                                                $model = static::resolveResourceModel($resource);
+                                                if (! $model) {
+                                                    return [];
+                                                }
+
+                                                $columns = Schema::getColumnListing($model->getTable());
+
+                                                return collect($columns)->mapWithKeys(function ($column) {
+                                                    return [$column => Str::title($column)];
+                                                })->toArray();
+                                            })
                                             ->searchable()
                                             ->visible(fn (Get $get): bool => ! empty($get('resource')))
                                             ->required(fn (Get $get): bool => ! empty($get('resource'))),
