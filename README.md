@@ -8,8 +8,8 @@
 ![Test](https://github.com/backstagephp/core/actions/workflows/run-tests.yml/badge.svg)
 [![Fresh Laravel install](https://github.com/backstagephp/cms/actions/workflows/setup-in-laravel.yml/badge.svg)](https://github.com/backstagephp/cms/actions/workflows/setup-in-laravel.yml)
 ![PHPStan](https://github.com/backstagephp/core/actions/workflows/phpstan.yml/badge.svg)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/backstagephp/cms.svg?style=flat-square)](https://packagist.org/packages/backstagephp/cms)
-[![Total Downloads](https://img.shields.io/packagist/dt/backstagephp/cms.svg?style=flat-square)](https://packagist.org/packages/backstagephp/cms)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/backstage/cms.svg?style=flat-square)](https://packagist.org/packages/backstage/cms)
+[![Total Downloads](https://img.shields.io/packagist/dt/backstage/cms.svg?style=flat-square)](https://packagist.org/packages/backstage/cms)
 
 Backstage is the CMS for building the modern web. Made with Laravel and Filament.
 
