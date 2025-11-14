@@ -16,9 +16,9 @@ class MediaGridPicker extends Component
     public int $perPage = 12;
 
     public ?string $selectedMediaId = null;
-    
+
     public ?string $selectedMediaUuid = null;
-    
+
     public string $search = '';
 
     public function mount(string $fieldName, int $perPage = 12): void
@@ -35,7 +35,7 @@ class MediaGridPicker extends Component
         $query = $mediaModel::query();
 
         // Apply search filter
-        if (!empty($this->search)) {
+        if (! empty($this->search)) {
             $query->where('original_filename', 'like', '%' . $this->search . '%');
         }
 

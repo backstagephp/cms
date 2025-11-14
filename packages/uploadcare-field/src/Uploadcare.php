@@ -53,7 +53,7 @@ class Uploadcare extends Base implements FieldContract
                 ->modalWidth('Screen')
                 ->modalCancelActionLabel(__('Cancel'))
                 ->modalSubmitActionLabel(__('Select'))
-                ->action(function (Action $action, array $data, $livewire) use ($name, $input) {
+                ->action(function (Action $action, array $data, $livewire) use ($input) {
                     // Get the selected UUID from form data
                     $selectedMediaUuid = $data['selected_media_uuid'] ?? null;
 
