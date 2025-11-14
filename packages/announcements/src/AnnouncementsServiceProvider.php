@@ -107,7 +107,7 @@ class AnnouncementsServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('backstage-announcements', __DIR__ . '/../resources/dist/components/backstage-announcements.js'),
-            // Css::make('backstage-announcements-styles', __DIR__ . '/../resources/dist/backstage-announcements.css'),
+            Css::make('backstage-announcements-styles', __DIR__ . '/../resources/dist/backstage-announcements.css'),
             Js::make('backstage-announcements-scripts', __DIR__ . '/../resources/dist/backstage-announcements.js'),
         ];
     }
@@ -154,6 +154,7 @@ class AnnouncementsServiceProvider extends PackageServiceProvider
         return [
             'create_backstage_announcements_table',
             'create_announcement_dismissals_table',
+            'add_start_date_end_date_to_announcements_table',
         ];
     }
 }
