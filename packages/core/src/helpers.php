@@ -19,3 +19,16 @@ if (! function_exists('setting')) {
         return $setting->setting($keys[1]) ?? $default;
     }
 }
+
+if (! function_exists('flag_path')) {
+    function flag_path(string $code): string
+    {
+        $vendorPath = base_path('vendor/backstage/cms/resources/img/flags/' . $code . '.svg');
+
+        if (file_exists($vendorPath)) {
+            return $vendorPath;
+        }
+
+        return dirname(base_path()) . '/cms/packages/core/resources/img/flags/' . $code . '.svg';
+    }
+}

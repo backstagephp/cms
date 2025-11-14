@@ -412,7 +412,7 @@ class ContentResource extends Resource
                                                     })
                                                     ->mapWithKeys(fn ($languages, $countryName) => [
                                                         $countryName => $languages->mapWithKeys(fn ($language) => [
-                                                            $language->code => '<img src="data:image/svg+xml;base64,' . base64_encode(file_get_contents(base_path('vendor/backstage/cms/resources/img/flags/' . explode('-', $language->code)[0] . '.svg'))) . '" class="inline-block relative w-5" style="top: -1px; margin-right: 3px;"> ' . localized_language_name($language->code) . ' (' . $countryName . ')',
+                                                            $language->code => '<img src="data:image/svg+xml;base64,' . base64_encode(file_get_contents(flag_path(explode('-', $language->code)[0]))) . '" class="inline-block relative w-5" style="top: -1px; margin-right: 3px;"> ' . localized_language_name($language->code) . ' (' . $countryName . ')',
                                                         ])->toArray(),
                                                     ])
                                             )
@@ -861,17 +861,24 @@ class ContentResource extends Resource
                         }),
 
                     ...Language::all()
-                        ->map(
-                            fn (Language $language) => BulkAction::make($language->code)
+                        ->map(function (Language $language) {
+                            return BulkAction::make($language->code)
                                 ->label($language->name)
-                                ->icon(fn () => 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(base_path('vendor/backstage/cms/resources/img/flags/' . explode('-', $language->code)[0] . '.svg'))))
+                                ->icon(function () use ($language) {
+                                    $flagCode = explode('-', $language->code)[0];
+                                    $flagPath = flag_path($flagCode);
+
+                                    return file_exists($flagPath)
+                                        ? 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($flagPath))
+                                        : null;
+                                })
                                 ->requiresConfirmation()
                                 ->action(function (Collection $records) use ($language) {
                                     $records->each(function (Content $record) use ($language) {
                                         $record->translate($language);
                                     });
-                                })
-                        ),
+                                });
+                        }),
                 ])
                     ->icon(fn (): BackedEnum => Heroicon::OutlinedLanguage)
                     ->label(fn (): string => __('Translate')),

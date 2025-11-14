@@ -75,7 +75,7 @@ class MenuResource extends Resource
                                                     })
                                                     ->mapWithKeys(fn ($languages, $countryName) => [
                                                         $countryName => $languages->mapWithKeys(fn ($language) => [
-                                                            $language->code => '<img src="data:image/svg+xml;base64,' . base64_encode(file_get_contents(base_path('vendor/backstage/cms/resources/img/flags/' . explode('-', $language->code)[0] . '.svg'))) . '" class="inline-block relative w-5" style="top: -1px; margin-right: 3px;"> ' . localized_language_name($language->code) . ' (' . $countryName . ')',
+                                                            $language->code => '<img src="data:image/svg+xml;base64,' . base64_encode(file_get_contents(flag_path(explode('-', $language->code)[0]))) . '" class="inline-block relative w-5" style="top: -1px; margin-right: 3px;"> ' . localized_language_name($language->code) . ' (' . $countryName . ')',
                                                         ])->toArray(),
                                                     ])
                                             )
