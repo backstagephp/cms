@@ -122,39 +122,48 @@
     "repositories": [
         {
             "type": "path",
-            "url": "packages/announcements"
+            "url": "packages/announcements",
+            "canonical": false
         },
         {
             "type": "path",
-            "url": "packages/core"
+            "url": "packages/core",
+            "canonical": false
         },
         {
             "type": "path",
-            "url": "packages/fields"
+            "url": "packages/fields",
+            "canonical": false
         },
         {
             "type": "path",
-            "url": "packages/filament-uploadcare-field"
+            "url": "packages/filament-uploadcare-field",
+            "canonical": false
         },
         {
             "type": "path",
-            "url": "packages/laravel-redirects"
+            "url": "packages/laravel-redirects",
+            "canonical": false
         },
         {
             "type": "path",
-            "url": "packages/laravel-translations"
+            "url": "packages/laravel-translations",
+            "canonical": false
         },
         {
             "type": "path",
-            "url": "packages/media"
+            "url": "packages/media",
+            "canonical": false
         },
         {
             "type": "path",
-            "url": "packages/redirects"
+            "url": "packages/redirects",
+            "canonical": false
         },
         {
             "type": "path",
-            "url": "packages/uploadcare-field"
+            "url": "packages/uploadcare-field",
+            "canonical": false
         }
     ]
 }

@@ -15,7 +15,7 @@ foreach($files as $file) {
             $repositories[] = [
                 'type' => 'path',
                 'url' => ltrim($file, './'),
-                'canonical' => true,
+                'canonical' => false,
             ];
         }
     }
