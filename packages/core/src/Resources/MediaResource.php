@@ -104,7 +104,7 @@ class MediaResource extends Resource
                             ->prefixIcon(country_flag($languages['default']->code), true)
                             ->helperText(__('The alt tag for the media in the default language. We can automatically translate this to other languages using AI.'))
                             ->required()
-                            ->columnSpan(1),
+                            ->columnSpanFull(),
                     ])->columnSpanFull();
         }
 
