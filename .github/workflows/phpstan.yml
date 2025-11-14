@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           composer config minimum-stability ${{ matrix.stability }}
-          composer install --no-interaction --dev
+          composer install --no-interaction
 
       - name: Run PHPStan
         run: ./vendor/bin/phpstan --error-format=github

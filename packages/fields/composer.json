@@ -32,7 +32,7 @@
         "nunomaduro/collision": "^8.1.1||^7.10.0",
         "nunomaduro/larastan": "^3.0",
         "orchestra/testbench": "^9.0.0",
-        "pestphp/pest": "^2.34",
+        "pestphp/pest": "^4.1",
         "pestphp/pest-plugin-arch": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
         "phpstan/extension-installer": "^1.1",
@@ -73,8 +73,6 @@
                 "Fields": "Backstage\\Fields\\Facades\\Fields"
             }
         }
-    },
-    "repositories": {
     },
     "minimum-stability": "beta",
     "prefer-stable": true
