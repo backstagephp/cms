@@ -60,6 +60,8 @@ jobs:
           cp -r packages theater/
           cd theater
           composer config minimum-stability dev
-          php ../.github/scripts/generate-composer-repositories.php
-          composer require backstage/cms:dev-${{ steps.extract_branch.outputs.branch }}
+          PACKAGES=$(php ../.github/scripts/generate-composer-repositories.php packages)
+          for package in $PACKAGES; do
+            composer require "$package:dev-${{ steps.extract_branch.outputs.branch }}"
+          done
           php artisan backstage:install
