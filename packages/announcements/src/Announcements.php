@@ -8,6 +8,7 @@ use Filament\Pages\Page;
 use Filament\Pages\SimplePage;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Schema;
 
 class Announcements
@@ -15,6 +16,10 @@ class Announcements
     public function register()
     {
         if (! Schema::hasTable(app(Announcement::class)->getTable())) {
+            return;
+        }
+        
+        if(App::runningInConsole()) {
             return;
         }
 
