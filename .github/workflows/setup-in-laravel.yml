@@ -55,7 +55,8 @@ jobs:
           cp -r packages theater/
           cd theater
           composer config minimum-stability dev
-          PACKAGES=$(php ../.github/scripts/generate-composer-repositories.php packages)
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          PACKAGES=$(php ../.github/scripts/generate-composer-repositories.php packages "$BRANCH")
           for package in $PACKAGES; do
             composer require "$package:@dev"
           done

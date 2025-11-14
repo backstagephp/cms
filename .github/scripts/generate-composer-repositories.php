@@ -5,8 +5,11 @@ $branch = $argv[2] ?? null;
 
 // Get branch from git if not provided
 if ($branch === null) {
-    $branch = trim(shell_exec('git rev-parse --abbrev-ref HEAD 2>/dev/null') ?: 'dev-main');
+    $branch = trim(shell_exec('git rev-parse --abbrev-ref HEAD 2>/dev/null') ?: 'main');
 }
+
+// Format reference as dev-{branch} for development branches
+$reference = $branch === 'main' ? 'dev-main' : 'dev-' . $branch;
 
 $files = glob($packagesDir . '/*', GLOB_ONLYDIR);
 
@@ -26,7 +29,7 @@ foreach($files as $file) {
                 'type' => 'path',
                 'url' => ltrim($file, './'),
                 'canonical' => false,
-                'reference' => $branch,
+                'reference' => $reference,
             ];
         }
     }
