@@ -118,5 +118,43 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/announcements"
+        },
+        {
+            "type": "path",
+            "url": "packages/core"
+        },
+        {
+            "type": "path",
+            "url": "packages/fields"
+        },
+        {
+            "type": "path",
+            "url": "packages/filament-uploadcare-field"
+        },
+        {
+            "type": "path",
+            "url": "packages/laravel-redirects"
+        },
+        {
+            "type": "path",
+            "url": "packages/laravel-translations"
+        },
+        {
+            "type": "path",
+            "url": "packages/media"
+        },
+        {
+            "type": "path",
+            "url": "packages/redirects"
+        },
+        {
+            "type": "path",
+            "url": "packages/uploadcare-field"
+        }
+    ]
 }
