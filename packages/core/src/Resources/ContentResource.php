@@ -865,7 +865,7 @@ class ContentResource extends Resource
                         ->map(
                             fn (Language $language) => BulkAction::make($language->code)
                                 ->label($language->name)
-                                ->icon(fn () => 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(base_path('vendor/backstage/cms/resources/img/flags/' . explode('-', $language->code)[0] . '.svg'))))
+                                ->icon(fn () => 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(__DIR__ . '/../../resources/img/flags/' . explode('-', $language->code)[0] . '.svg')))
                                 ->requiresConfirmation()
                                 ->action(function (Collection $records) use ($language) {
                                     $records->each(function (Content $record) use ($language) {
