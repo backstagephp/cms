@@ -49,7 +49,7 @@
     "require-dev": {
         "larastan/larastan": "^3.0",
         "orchestra/testbench": "^9.0",
-        "pestphp/pest-plugin-arch": "^3.0",
+        "pestphp/pest-plugin-arch": "^4.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",

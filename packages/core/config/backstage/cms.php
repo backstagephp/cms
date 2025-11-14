@@ -6,8 +6,8 @@ return [
 
         'plugins' => [
             Backstage\Redirects\Filament\RedirectsPlugin::make(),
-            // Backstage\Media\MediaPlugin::make(),
-            // Backstage\Translations\Filament\TranslationsPlugin::make(),
+            Backstage\Media\MediaPlugin::make(),
+            Backstage\Translations\Filament\TranslationsPlugin::make(),
         ],
 
         'resources' => [
