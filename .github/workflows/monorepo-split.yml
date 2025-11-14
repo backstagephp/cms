@@ -13,6 +13,7 @@ jobs:
         package:
           - fields
           - media
+          - announcements
           - core
     steps:
       - uses: actions/checkout@v3
