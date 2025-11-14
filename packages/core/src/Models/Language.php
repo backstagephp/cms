@@ -3,9 +3,10 @@
 namespace Backstage\Models;
 
 use Backstage\Shared\HasPackageFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Language extends \Backstage\Translations\Laravel\Models\Language
+class Language extends Model
 {
     use HasPackageFactory;
 
