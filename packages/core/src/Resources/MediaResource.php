@@ -140,10 +140,5 @@ class MediaResource extends Resource
                 $record->pushTranslateAttribute('alt', $data[$key], $language->code);
             }
         }
-
-        Notification::make()
-            ->title(__('Alt text updated'))
-            ->body(__('The alt text has been updated for the media.'))
-            ->send();
     }
 }
