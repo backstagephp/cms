@@ -18,41 +18,41 @@ class Announcements
         if (! Schema::hasTable(app(Announcement::class)->getTable())) {
             return;
         }
-        
-        if(App::runningInConsole()) {
+
+        if (App::runningInConsole()) {
             return;
         }
 
         Announcement::query()
             ->get()
             ->each(function ($announcement) {
-                if(! $announcement->isActive()) {
+                if (! $announcement->isActive()) {
                     return;
                 }
 
-            collect($announcement->scopes)->each(function ($scope) use ($announcement) {
-                $instance = new $scope;
+                collect($announcement->scopes)->each(function ($scope) use ($announcement) {
+                    $instance = new $scope;
 
-                $hook = match (true) {
-                    $instance instanceof SimplePage => PanelsRenderHook::SIMPLE_PAGE_START,
-                    $instance instanceof Page => PanelsRenderHook::CONTENT_START,
-                    default => null,
-                };
+                    $hook = match (true) {
+                        $instance instanceof SimplePage => PanelsRenderHook::SIMPLE_PAGE_START,
+                        $instance instanceof Page => PanelsRenderHook::CONTENT_START,
+                        default => null,
+                    };
 
-                if ($hook) {
-                    FilamentView::registerRenderHook(
-                        name: $hook,
-                        hook: function () use ($announcement, $scope) {
-                            if ($announcement->isDismissedBy(Filament::auth()->user()?->id)) {
-                                return '';
-                            }
+                    if ($hook) {
+                        FilamentView::registerRenderHook(
+                            name: $hook,
+                            hook: function () use ($announcement, $scope) {
+                                if ($announcement->isDismissedBy(Filament::auth()->user()?->id)) {
+                                    return '';
+                                }
 
-                            return $announcement->render($scope);
-                        },
-                        scopes: $scope
-                    );
-                }
+                                return $announcement->render($scope);
+                            },
+                            scopes: $scope
+                        );
+                    }
+                });
             });
-        });
     }
 }

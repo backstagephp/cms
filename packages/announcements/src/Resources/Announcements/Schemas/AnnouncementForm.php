@@ -12,7 +12,6 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\FusedGroup;
 use Filament\Schemas\Components\Html;
-use Filament\Schemas\Components\Icon;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
 use Filament\Schemas\Schema;
@@ -78,25 +77,23 @@ class AnnouncementForm
                                     ->seconds(false)
                                     ->placeholder(__('Start Date')),
 
-
                                 DateTimePicker::make('end_date')
                                     ->native(false)
                                     ->seconds(false)
                                     ->placeholder(__('End Date'))
-
-                            ->registerActions([
-                                Action::make('information')
-                                    ->label(__('Information'))
-                                    ->icon(Heroicon::OutlinedInformationCircle)
-                                    ->color('gray')
-                                    ->modal()
-                                    ->modalIcon(Heroicon::OutlinedInformationCircle)
-                                    ->modalIconColor('info')
-                                    ->modalHeading(__('Information'))
-                                    ->modalContent(Html::make(__('If setting a start date, the announcement will only be displayed after the start date. If setting an end date, the announcement will only be displayed before the end date. If setting both, the announcement will only be displayed between the start and end dates.')))
-                                    ->modalFooterActions([])
-                                    ->modalWidth(Width::Large)
-                            ]),
+                                    ->registerActions([
+                                        Action::make('information')
+                                            ->label(__('Information'))
+                                            ->icon(Heroicon::OutlinedInformationCircle)
+                                            ->color('gray')
+                                            ->modal()
+                                            ->modalIcon(Heroicon::OutlinedInformationCircle)
+                                            ->modalIconColor('info')
+                                            ->modalHeading(__('Information'))
+                                            ->modalContent(Html::make(__('If setting a start date, the announcement will only be displayed after the start date. If setting an end date, the announcement will only be displayed before the end date. If setting both, the announcement will only be displayed between the start and end dates.')))
+                                            ->modalFooterActions([])
+                                            ->modalWidth(Width::Large),
+                                    ]),
                             ])
                             ->columns(2)
                             ->beforeLabel(fn () => __('Start date'))
@@ -107,9 +104,9 @@ class AnnouncementForm
                                     'target' => $target,
                                     'label' => __('End date'),
                                 ])->render();
-                                
+
                                 return new HtmlString($link);
-                            })
+                            }),
                     ]),
             ]);
     }

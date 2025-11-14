@@ -69,28 +69,27 @@ class Announcement extends Model
     public function isActive(): bool
     {
         $now = now();
-    
+
         // No dates → active
-        if (!$this->start_date && !$this->end_date) {
+        if (! $this->start_date && ! $this->end_date) {
             return true;
         }
-    
+
         // Inside full range → active
-        if ($this->start_date && $this->end_date ) {
+        if ($this->start_date && $this->end_date) {
             return $now->between($this->start_date, $this->end_date, false);
         }
-    
+
         // Start in past → active
         if ($this->start_date) {
             return $now->gte($this->start_date);
         }
-    
+
         // End in future → active
         if ($this->end_date) {
             return $now->lte($this->end_date);
         }
-    
-        return true; // Your rules: if none match, still true
-    }    
 
+        return true; // Your rules: if none match, still true
+    }
 }

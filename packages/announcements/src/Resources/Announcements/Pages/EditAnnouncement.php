@@ -25,7 +25,7 @@ class EditAnnouncement extends EditRecord
                 ->action(function () {
                     $this->getRecord()->dismissals()->delete();
                 })
-                ->after(function() {
+                ->after(function () {
                     Notification::make()
                         ->title(__('Dismissals reset'))
                         ->body(__('All dismissals for this announcement have been reset.'))
