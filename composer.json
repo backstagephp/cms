@@ -118,5 +118,61 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/announcements",
+            "canonical": false,
+            "reference": "fix/setup-in-laravel-workflow"
+        },
+        {
+            "type": "path",
+            "url": "packages/core",
+            "canonical": false,
+            "reference": "fix/setup-in-laravel-workflow"
+        },
+        {
+            "type": "path",
+            "url": "packages/fields",
+            "canonical": false,
+            "reference": "fix/setup-in-laravel-workflow"
+        },
+        {
+            "type": "path",
+            "url": "packages/filament-uploadcare-field",
+            "canonical": false,
+            "reference": "fix/setup-in-laravel-workflow"
+        },
+        {
+            "type": "path",
+            "url": "packages/laravel-redirects",
+            "canonical": false,
+            "reference": "fix/setup-in-laravel-workflow"
+        },
+        {
+            "type": "path",
+            "url": "packages/laravel-translations",
+            "canonical": false,
+            "reference": "fix/setup-in-laravel-workflow"
+        },
+        {
+            "type": "path",
+            "url": "packages/media",
+            "canonical": false,
+            "reference": "fix/setup-in-laravel-workflow"
+        },
+        {
+            "type": "path",
+            "url": "packages/redirects",
+            "canonical": false,
+            "reference": "fix/setup-in-laravel-workflow"
+        },
+        {
+            "type": "path",
+            "url": "packages/uploadcare-field",
+            "canonical": false,
+            "reference": "fix/setup-in-laravel-workflow"
+        }
+    ]
 }

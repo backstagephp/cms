@@ -72,20 +72,7 @@
             }
         }
     },
-    "repositories": {
-        "backstage/fields": {
-            "type": "git",
-            "url": "git@github.com:backstagephp/fields.git"
-        },
-        "backstage/cms": {
-            "type": "git",
-            "url": "https://github.com/backstagephp/core.git"
-        },
-        "saade/filament-adjacency-list": {
-            "type": "git",
-            "url": "git@github.com:backstagephp/filament-adjacency-list.git"
-        }
-    },
+    "repositories": [],
     "minimum-stability": "dev",
     "prefer-stable": true
 }

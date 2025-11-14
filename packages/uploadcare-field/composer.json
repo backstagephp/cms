@@ -80,10 +80,5 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "repositories": {
-        "fields": {
-            "type": "git",
-            "url": "git@github.com:backstagephp/fields.git"
-        }
-    }
+    "repositories": []
 }

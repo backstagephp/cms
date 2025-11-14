@@ -41,10 +41,11 @@ jobs:
         run: |
           laravel new theater --no-interaction
 
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
+      - name: Clone CMS repository
+        run: |
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          cd theater
+          git clone --depth 1 --branch "$BRANCH" https://github.com/backstagephp/cms.git cms || git clone --depth 1 --branch main https://github.com/backstagephp/cms.git cms
 
       - name: Prepare and install backstage
         env:
@@ -59,6 +60,9 @@ jobs:
         run: |
           cd theater
           composer config minimum-stability dev
-          composer config repositories.cms vcs git@github.com:backstagephp/cms.git
-          composer require backstage/cms:dev-${{ steps.extract_branch.outputs.branch }}
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          PACKAGES=$(php ../.github/scripts/generate-composer-repositories.php cms/packages "$BRANCH")
+          for package in $PACKAGES; do
+            composer require "$package:@dev"
+          done
           php artisan backstage:install
