@@ -16,6 +16,8 @@ jobs:
           - announcements
           - core
           - laravel-translations
+          - redirects
+          - laravel-redirects
     steps:
       - uses: actions/checkout@v3
       - id: previous-tag
