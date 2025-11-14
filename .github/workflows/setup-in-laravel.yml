@@ -60,4 +60,5 @@ jobs:
           cd theater
           composer config minimum-stability dev
           composer require backstage/cms:dev-${{ steps.extract_branch.outputs.branch }}
+          composer config repositories.cms vcs git@github.com:backstagephp/cms.git
           php artisan backstage:install
