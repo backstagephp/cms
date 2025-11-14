@@ -38,61 +38,57 @@
     ],
     "require": {
         "php": "^8.2",
-        "backstage/redirects": "dev-release/1.x",
-        "backstage/translations": "^0.4.1",
-        "baspa/laravel-timezones": "^1.2",
-        "codewithdennis/filament-select-tree": "^4.0",
         "filament/filament": "^4.0",
-        "nette/php-generator": "^4.1",
-        "saade/filament-adjacency-list": "^4.0",
-        "spatie/laravel-package-tools": "^1.18",
-        "spatie/once": "^3.1",
-        "spatie/schema-org": "^3.23",
-        "staudenmeir/laravel-adjacency-list": "^1.0"
-    },
-    "replace": {
-        "backstage/fields": "self.version",
-        "backstage/media": "self.version"
+        "laravel/framework": "^12.0",
+        "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
-        "larastan/larastan": "^3.0",
-        "laravel/pint": "^1.0",
-        "nunomaduro/collision": "^8.0",
-        "orchestra/testbench": "^9.0",
-        "pestphp/pest": "^3.7",
-        "pestphp/pest-plugin-arch": "^3.0",
-        "pestphp/pest-plugin-laravel": "^3.0",
-        "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan-deprecation-rules": "^2.0",
-        "phpstan/phpstan-phpunit": "^2.0"
+        "fakerphp/faker": "^1.23",
+        "laravel/pail": "^1.2.2",
+        "laravel/pint": "^1.24",
+        "laravel/sail": "^1.41",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^4.1",
+        "pestphp/pest-plugin-laravel": "^4.0"
     },
     "autoload": {
         "psr-4": {
-            "Backstage\\": [
-                "packages/core/src/"
-            ],
-            "Backstage\\Tests\\": "tests",
-            "Backstage\\Fields\\": "packages/fields/src/",
-            "Backstage\\Fields\\Database\\Factories\\": "packages/fields/database/factories/",
-            "Backstage\\Media\\": "packages/media/src/",
-            "Backstage\\Database\\Factories\\": "database/factories/",
-            "Backstage\\Database\\Seeders\\": "database/seeders/"
-        },
-        "files": [
-            "packages/core/src/helpers.php"
-        ]
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
-            "Backstage\\Tests\\": "tests/"
+            "Tests\\": "tests/"
         }
     },
     "scripts": {
-        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
-        "analyse": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage",
-        "format": "vendor/bin/pint"
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ]
     },
     "config": {
         "sort-packages": true,
@@ -104,17 +100,7 @@
     },
     "extra": {
         "laravel": {
-            "providers": [
-                "Backstage\\BackstageServiceProvider",
-                "Backstage\\BackstagePanelProvider",
-                "Backstage\\Fields\\FieldsServiceProvider",
-                "Backstage\\Media\\MediaServiceProvider"
-            ],
-            "aliases": {
-                "Backstage": "Backstage\\Facades\\Backstage",
-                "Fields": "Backstage\\Fields\\Facades\\Fields",
-                "Media": "Backstage\\Media\\Facades\\Media"
-            }
+            "dont-discover": []
         }
     },
     "minimum-stability": "dev",
