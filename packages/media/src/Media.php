@@ -51,14 +51,15 @@ class Media
                 }
             }
 
-            $media[] = Model::updateOrCreate([
-                'site_ulid' => Filament::getTenant()->ulid,
+            $tenant = Filament::getTenant();
+            $mediaModel = Model::updateOrCreate([
+                'site_ulid' => $tenant && property_exists($tenant, 'ulid') ? $tenant->ulid : null,
                 'disk' => config('backstage.media.disk'),
                 'original_filename' => pathinfo($filename, PATHINFO_FILENAME),
                 'checksum' => md5_file($fullPath),
             ], [
                 'filename' => $filename,
-                'uploaded_by' => auth()->user()->id,
+                'uploaded_by' => auth()->user()?->id,
                 'extension' => $extension,
                 'mime_type' => $mimeType,
                 'size' => $fileSize,
@@ -66,6 +67,8 @@ class Media
                 'height' => $fileInfo['height'] ?? null,
                 'public' => config('backstage.media.visibility') === 'public',
             ]);
+
+            $media[] = $mediaModel;
         }
 
         return $media;

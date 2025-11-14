@@ -25,6 +25,8 @@ You can publish and run the migrations with:
 
 ```bash
 php artisan vendor:publish --tag="media-migrations"
+php artisan vendor:publish --provider="Backstage\Translations\Laravel\TranslationServiceProvider"
+php artisan migrate
 ```
 
 > [!NOTE]
@@ -228,8 +230,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
--   [Baspa](https://github.com/vormkracht10)
--   [All Contributors](../../contributors)
+- [Baspa](https://github.com/vormkracht10)
+- [All Contributors](../../contributors)
 
 ## License
 

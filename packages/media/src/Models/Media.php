@@ -12,6 +12,24 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * @property string $ulid
+ * @property string $filename
+ * @property string $path
+ * @property string $mime_type
+ * @property int $size
+ * @property int|null $width
+ * @property int|null $height
+ * @property string|null $alt
+ * @property array|null $metadata
+ * @property int|null $uploaded_by
+ * @property string|null $tenant_ulid
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read string $humanReadableSize
+ * @property-read string $src
+ */
 class Media extends Model
 {
     use HasUlids;
@@ -68,7 +86,7 @@ class Media extends Model
             if ($tenantRelationship && class_exists($tenantModel)) {
                 $currentTenant = Filament::getTenant();
 
-                if ($currentTenant) {
+                if ($currentTenant && property_exists($currentTenant, 'ulid')) {
                     $model->{$tenantRelationship . '_ulid'} = $currentTenant->ulid;
                 }
             }

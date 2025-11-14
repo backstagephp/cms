@@ -200,7 +200,7 @@ class MediaPlugin implements Plugin
     }
 
     /**
-     * @return class-string<MediaLibraryItem>
+     * @return class-string<Media>
      */
     public function getModelItem(): string
     {
