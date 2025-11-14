@@ -2,17 +2,17 @@
 
 namespace Backstage\Media\Models;
 
-use Filament\Facades\Filament;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Backstage\Translations\Laravel\Contracts\TranslatesAttributes;
 use Backstage\Translations\Laravel\Models\Concerns\HasTranslatableAttributes;
+use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * @property string $ulid
@@ -34,8 +34,8 @@ use Backstage\Translations\Laravel\Models\Concerns\HasTranslatableAttributes;
  */
 class Media extends Model implements TranslatesAttributes
 {
-    use HasUlids;
     use HasTranslatableAttributes;
+    use HasUlids;
     use SoftDeletes;
 
     protected $primaryKey = 'ulid';

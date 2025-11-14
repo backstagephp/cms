@@ -14,22 +14,21 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Support\Icons\Heroicon;
-use Filament\Facades\Filament;
 use Filament\Infolists\Components\CodeEntry;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -243,6 +242,7 @@ class MediaResource extends Resource
                                     if (method_exists($record, 'getTranslatedAttribute')) {
                                         return $record->getTranslatedAttribute('alt', $code) ?? '';
                                     }
+
                                     return $record->alt ?? '';
                                 })
                                 ->icon(country_flag($code))
@@ -259,6 +259,7 @@ class MediaResource extends Resource
                                     if (method_exists($record, 'getTranslatedAttribute')) {
                                         return $record->getTranslatedAttribute('alt', $code) ?? '';
                                     }
+
                                     return '';
                                 })
                                 ->icon(country_flag($code))
@@ -352,7 +353,7 @@ class MediaResource extends Resource
         try {
             $languages = Language::all();
 
-            if (!$languages->isEmpty()) {
+            if (! $languages->isEmpty()) {
                 $defaultLanguage = $languages->firstWhere('default', true);
                 $otherLanguages = $languages->where('default', false);
 
@@ -457,9 +458,7 @@ class MediaResource extends Resource
     }
 
     /**
-     * @param array $data
-     * @param \Backstage\Media\Models\Media $record
-     * @return void
+     * @param  \Backstage\Media\Models\Media  $record
      */
     private static function saveEditForm(array $data, $record): void
     {
@@ -500,14 +499,14 @@ class MediaResource extends Resource
                         'value' => $data['alt'],
                     ]);
                     // Then push translation
-                        $record->pushTranslateAttribute('alt', $data['alt'], $defaultLanguage->code);
+                    $record->pushTranslateAttribute('alt', $data['alt'], $defaultLanguage->code);
                 }
 
                 // Save other language translations
                 foreach ($otherLanguages as $language) {
                     $key = 'alt_text_' . $language->code;
                     if (isset($data[$key])) {
-                            $record->pushTranslateAttribute('alt', $data[$key], $language->code);
+                        $record->pushTranslateAttribute('alt', $data[$key], $language->code);
                     }
                 }
             } catch (\Exception $e) {
