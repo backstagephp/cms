@@ -3,8 +3,6 @@ name: Setup
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   stagehand:
@@ -59,6 +57,5 @@ jobs:
         run: |
           cd theater
           composer config minimum-stability dev
-          composer config repositories.cms vcs git@github.com:backstagephp/cms.git
           composer require backstage/cms:dev-${{ steps.extract_branch.outputs.branch }}
           php artisan backstage:install
