@@ -3,14 +3,16 @@
 namespace Backstage\Media\Models;
 
 use Filament\Facades\Filament;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Backstage\Translations\Laravel\Contracts\TranslatesAttributes;
+use Backstage\Translations\Laravel\Models\Concerns\HasTranslatableAttributes;
 
 /**
  * @property string $ulid
@@ -30,9 +32,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * @property-read string $humanReadableSize
  * @property-read string $src
  */
-class Media extends Model
+class Media extends Model implements TranslatesAttributes
 {
     use HasUlids;
+    use HasTranslatableAttributes;
     use SoftDeletes;
 
     protected $primaryKey = 'ulid';
@@ -51,12 +54,20 @@ class Media extends Model
         'created_at' => 'datetime:d-m-Y H:i',
         'updated_at' => 'datetime:d-m-Y H:i',
         'metadata' => 'array',
+        'alt' => 'string',
     ];
 
     protected $appends = [
         'humanReadableSize',
         'src',
     ];
+
+    public function getTranslatableAttributes(): array
+    {
+        return [
+            'alt',
+        ];
+    }
 
     public function getRouteKeyName(): string
     {
