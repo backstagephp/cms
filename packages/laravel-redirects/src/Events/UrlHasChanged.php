@@ -7,7 +7,8 @@ use Illuminate\Queue\SerializesModels;
 
 class UrlHasChanged
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     public function __construct(
         public readonly string $oldUrl,
