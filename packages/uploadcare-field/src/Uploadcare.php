@@ -51,26 +51,41 @@ class Uploadcare extends Base implements FieldContract
                 ->size('sm')
                 ->modalHeading(__('Select Media'))
                 ->modalCancelActionLabel(__('Cancel'))
-                ->action(function (Action $action, $schema) {
+                ->modalSubmitActionLabel(__('Select'))
+                ->action(function (Action $action, array $data) use ($name) {
+                    $selectedMediaUuid = $data['selected_media_uuid'] ?? null;
 
-                    $formData = $schema->getState();
-                    $selectedMediaUuid = $formData['selected_media_uuid'] ?? null;
-
-                    \Log::info('Action called', [
+                    \Log::info('MediaPicker Action called', [
                         'selectedMediaUuid' => $selectedMediaUuid,
-                        'formData' => $formData,
+                        'fieldName' => $name,
+                        'formData' => $data,
                     ]);
 
                     if ($selectedMediaUuid) {
-                        // Set the main form field value
-                        $schema->getState()[$name] = $selectedMediaUuid;
+                        // Get the parent Uploadcare component
+                        $component = $action->getComponent();
 
-                        \Log::info('Set form field value', [
-                            'fieldName' => $name,
-                            'uuid' => $selectedMediaUuid,
+                        \Log::info('Component retrieved', [
+                            'component' => $component ? get_class($component) : null,
+                            'componentStatePath' => $component ? $component->getStatePath() : null,
+                            'currentState' => $component ? $component->getState() : null,
                         ]);
-                    }
 
+                        if ($component) {
+                            // Update the component's state
+                            $component->state($selectedMediaUuid);
+                            $component->callAfterStateUpdated();
+
+                            \Log::info('Component state updated', [
+                                'newState' => $component->getState(),
+                                'statePath' => $component->getStatePath(),
+                            ]);
+                        } else {
+                            \Log::warning('Component not found in Action');
+                        }
+                    } else {
+                        \Log::warning('No selectedMediaUuid in form data');
+                    }
                 })
                 ->schema([
                     MediaGridPicker::make('media_picker')

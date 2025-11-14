@@ -55,58 +55,23 @@ class MediaGridPicker extends Component
 
     public function selectMedia(array $media): void
     {
-        \Log::info('selectMedia called', ['media' => $media]);
         $this->selectedMediaId = $media['id'];
-        \Log::info('selectedMediaId set to', ['selectedMediaId' => $this->selectedMediaId]);
-    }
-
-    public function confirmSelection(?string $selectedMediaId = null): void
-    {
-        if ($selectedMediaId) {
-            $this->selectedMediaId = $selectedMediaId;
-        }
-
-        \Log::info('confirmSelection called', ['selectedMediaId' => $this->selectedMediaId]);
-
-        if (! $this->selectedMediaId) {
-            \Log::info('No selectedMediaId, returning');
-
-            return;
-        }
-
-        // Find the selected media from the current page
-        $selectedMedia = $this->mediaItems->firstWhere('id', $this->selectedMediaId);
-
-        \Log::info('Selected media found', ['selectedMedia' => $selectedMedia]);
-
-        if (! $selectedMedia) {
-            \Log::info('No selectedMedia found, returning');
-
-            return;
-        }
 
         // Extract UUID from CDN URL
-        $cdnUrl = $selectedMedia['cdn_url'];
+        $cdnUrl = $media['cdn_url'] ?? null;
         $uuid = $cdnUrl;
 
-        if (str_contains($cdnUrl, 'ucarecdn.com/')) {
+        if ($cdnUrl && str_contains($cdnUrl, 'ucarecdn.com/')) {
             if (preg_match('/ucarecdn\.com\/([^\/\?]+)/', $cdnUrl, $matches)) {
                 $uuid = $matches[1];
             }
         }
 
-        // Set the hidden field value directly
+        // Update the hidden field value via Livewire dispatch
         $this->dispatch(
             'set-hidden-field',
             fieldName: 'selected_media_uuid',
             value: $uuid
-        );
-
-        // Dispatch browser event with the UUID
-        $this->dispatch(
-            'media-selected',
-            fieldName: $this->fieldName,
-            uuid: $uuid
         );
     }
 
