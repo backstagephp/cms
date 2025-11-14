@@ -62,7 +62,8 @@ class AnnouncementForm
                                     $key => $key,
                                 ];
                             });
-                    }),
+                    })
+                    ->required(),
             ]);
     }
 }
