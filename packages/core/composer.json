@@ -58,9 +58,6 @@
         "pestphp/pest": "^4.1",
         "pestphp/pest-plugin-laravel": "^4.0"
     },
-    "replace": {
-        "backstage/fields": "self.version"
-    },
     "autoload": {
         "psr-4": {
             "Backstage\\": "src/",
