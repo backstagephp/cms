@@ -62,6 +62,6 @@ jobs:
           composer config minimum-stability dev
           PACKAGES=$(php ../.github/scripts/generate-composer-repositories.php packages)
           for package in $PACKAGES; do
-            composer require "$package:dev-${{ steps.extract_branch.outputs.branch }}"
+            composer require "$package:@dev"
           done
           php artisan backstage:install
