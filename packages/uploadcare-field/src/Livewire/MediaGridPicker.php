@@ -96,13 +96,15 @@ class MediaGridPicker extends Component
         }
 
         // Set the hidden field value directly
-        $this->dispatch('set-hidden-field',
+        $this->dispatch(
+            'set-hidden-field',
             fieldName: 'selected_media_uuid',
             value: $uuid
         );
 
         // Dispatch browser event with the UUID
-        $this->dispatch('media-selected',
+        $this->dispatch(
+            'media-selected',
             fieldName: $this->fieldName,
             uuid: $uuid
         );
