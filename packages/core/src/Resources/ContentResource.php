@@ -363,7 +363,6 @@ class ContentResource extends Resource
                                             })
                                             ->disabledOptions(fn ($record) => [$record?->getKey()]),
 
-
                                         Toggle::make('public')
                                             ->label(__('Public'))
                                             ->default(fn () => self::$type->public ?? true)
