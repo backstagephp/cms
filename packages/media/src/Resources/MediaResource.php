@@ -7,9 +7,21 @@ use Backstage\Media\MediaPlugin;
 use Backstage\Media\Resources\MediaResource\CreateMedia;
 use Backstage\Media\Resources\MediaResource\EditMedia;
 use Backstage\Media\Resources\MediaResource\ListMedia;
+use Backstage\Translations\Laravel\Facades\Translator;
+use Backstage\Translations\Laravel\Models\Language;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Support\Icons\Heroicon;
 use Filament\Facades\Filament;
 use Filament\Infolists\Components\CodeEntry;
 use Filament\Infolists\Components\IconEntry;
@@ -131,6 +143,15 @@ class MediaResource extends Resource
                     ->schema([
                         ...self::getFormSchema(),
                     ]),
+                EditAction::make()
+                    ->hiddenLabel()
+                    ->tooltip(__('Edit'))
+                    ->slideOver()
+                    ->modalHeading(fn ($record) => $record->original_filename)
+                    ->url(false)
+                    ->fillForm(fn ($record) => self::getEditFormData($record))
+                    ->action(fn (array $data, $record) => self::saveEditForm($data, $record))
+                    ->form(fn () => self::getEditFormSchema()),
                 DeleteAction::make()
                     ->hiddenLabel()
                     ->tooltip(__('Delete')),
@@ -196,6 +217,67 @@ class MediaResource extends Resource
                         ->openUrlInNewTab(),
                 ]),
 
+            Section::make(__('Alt Text'))
+                ->schema(function () {
+                    try {
+                        $languages = Language::all();
+                        if ($languages->isEmpty()) {
+                            return [
+                                TextEntry::make('alt')
+                                    ->label(__('Alt Text'))
+                                    ->placeholder(__('No alt text set'))
+                                    ->columnSpanFull(),
+                            ];
+                        }
+
+                        $defaultLanguage = $languages->firstWhere('default', true);
+                        $otherLanguages = $languages->where('default', false);
+                        $entries = [];
+
+                        // Add default language
+                        if ($defaultLanguage) {
+                            $code = $defaultLanguage->code;
+                            $entries[] = TextEntry::make("alt_default_{$code}")
+                                ->label(__('Alt Text') . ' (' . strtoupper($code) . ')')
+                                ->state(function ($record) use ($code) {
+                                    if (method_exists($record, 'getTranslatedAttribute')) {
+                                        return $record->getTranslatedAttribute('alt', $code) ?? '';
+                                    }
+                                    return $record->alt ?? '';
+                                })
+                                ->icon(country_flag($code))
+                                ->placeholder(__('No alt text set'))
+                                ->columnSpanFull();
+                        }
+
+                        // Add other languages
+                        foreach ($otherLanguages as $language) {
+                            $code = $language->code;
+                            $entries[] = TextEntry::make("alt_lang_{$code}")
+                                ->label(__('Alt Text') . ' (' . strtoupper($code) . ')')
+                                ->state(function ($record) use ($code) {
+                                    if (method_exists($record, 'getTranslatedAttribute')) {
+                                        return $record->getTranslatedAttribute('alt', $code) ?? '';
+                                    }
+                                    return '';
+                                })
+                                ->icon(country_flag($code))
+                                ->placeholder(__('No translation'))
+                                ->columnSpanFull();
+                        }
+
+                        return $entries;
+                    } catch (\Exception $e) {
+                        return [
+                            TextEntry::make('alt')
+                                ->label(__('Alt Text'))
+                                ->placeholder(__('No alt text set'))
+                                ->columnSpanFull(),
+                        ];
+                    }
+                })
+                ->collapsible(),
+
             Section::make(__('Technical Details'))
                 ->schema([
                     TextEntry::make('disk')
@@ -260,6 +342,191 @@ class MediaResource extends Resource
         ];
 
         return $schema;
+    }
+
+    private static function getEditFormSchema(): array
+    {
+        // Build alt text fields
+        $altTextFields = [];
+
+        try {
+            $languages = Language::all();
+
+            if (!$languages->isEmpty()) {
+                $defaultLanguage = $languages->firstWhere('default', true);
+                $otherLanguages = $languages->where('default', false);
+
+                // Add default language alt text
+                if ($defaultLanguage) {
+                    $altTextFields[] = TextInput::make('alt')
+                        ->label(__('Alt Text') . ' (' . strtoupper($defaultLanguage->code) . ')')
+                        ->prefixIcon(country_flag($defaultLanguage->code), true)
+                        ->helperText(__('The alt text for the media in the default language. We can automatically translate this to other languages using AI.'))
+                        ->columnSpanFull();
+                }
+
+                // Add other languages
+                foreach ($otherLanguages as $language) {
+                    $altTextFields[] = TextInput::make('alt_text_' . $language->code)
+                        ->label(__('Alt Text') . ' (' . strtoupper($language->code) . ')')
+                        ->suffixActions([
+                            Action::make('translate_from_default')
+                                ->icon(Heroicon::OutlinedLanguage)
+                                ->tooltip(__('Translate from default language'))
+                                ->action(function (Get $get, Set $set) use ($language) {
+                                    $defaultAlt = $get('alt');
+                                    if ($defaultAlt) {
+                                        $translator = Translator::translate($defaultAlt, $language->code);
+                                        $set('alt_text_' . $language->code, $translator);
+                                    }
+                                }),
+                        ], true)
+                        ->prefixIcon(country_flag($language->code), true)
+                        ->columnSpanFull();
+                }
+            } else {
+                // No languages configured, just add simple alt field
+                $altTextFields[] = TextInput::make('alt')
+                    ->label(__('Alt Text'))
+                    ->columnSpanFull();
+            }
+        } catch (\Exception $e) {
+            // Fallback to simple alt field if languages can't be loaded
+            $altTextFields[] = TextInput::make('alt')
+                ->label(__('Alt Text'))
+                ->columnSpanFull();
+        }
+
+        return [
+            Tabs::make('Edit Media')
+                ->tabs([
+                    Tabs\Tab::make(__('File Info'))
+                        ->icon('heroicon-o-document')
+                        ->schema([
+                            TextInput::make('original_filename')
+                                ->label(__('Original Filename'))
+                                ->required()
+                                ->maxLength(255)
+                                ->columnSpanFull(),
+                        ]),
+
+                    Tabs\Tab::make(__('Alt Text'))
+                        ->icon('heroicon-o-language')
+                        ->schema($altTextFields),
+
+                    Tabs\Tab::make(__('Metadata'))
+                        ->icon('heroicon-o-code-bracket')
+                        ->schema([
+                            KeyValue::make('metadata')
+                                ->label(__('Metadata'))
+                                ->columnSpanFull(),
+                        ]),
+                ])
+                ->columnSpanFull(),
+        ];
+    }
+
+    private static function getEditFormData($record): array
+    {
+        $data = [
+            'original_filename' => $record->original_filename,
+            'alt' => $record->alt ?? '',
+            'metadata' => $record->metadata ?? [],
+        ];
+
+        // Load translations if supported
+        if (method_exists($record, 'getTranslatedAttribute')) {
+            try {
+                $languages = Language::all();
+                $defaultLanguage = $languages->firstWhere('default', true);
+                $otherLanguages = $languages->where('default', false);
+
+                if ($defaultLanguage) {
+                    $data['alt'] = $record->getTranslatedAttribute('alt', $defaultLanguage->code) ?? '';
+                }
+
+                foreach ($otherLanguages as $language) {
+                    $data['alt_text_' . $language->code] = $record->getTranslatedAttribute('alt', $language->code) ?? '';
+                }
+            } catch (\Exception $e) {
+                // Continue with simple alt text
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     * @param \Backstage\Media\Models\Media $record
+     * @return void
+     */
+    private static function saveEditForm(array $data, $record): void
+    {
+        // Debug: Log what we're receiving
+        \Log::info('SaveEditForm called', [
+            'data' => $data,
+            'record_class' => get_class($record),
+            'has_method' => method_exists($record, 'pushTranslateAttribute'),
+        ]);
+
+        // Update basic fields
+        $updateData = [
+            'original_filename' => $data['original_filename'],
+            'metadata' => $data['metadata'] ?? null,
+        ];
+
+        // Check if model supports translations
+        if (method_exists($record, 'pushTranslateAttribute')) {
+            // Model has translation support
+            $record->updateQuietly($updateData);
+
+            try {
+                $languages = Language::all();
+                $defaultLanguage = $languages->firstWhere('default', true);
+                $otherLanguages = $languages->where('default', false);
+
+                \Log::info('Languages loaded', [
+                    'default' => $defaultLanguage->code ?? 'none',
+                    'others' => $otherLanguages->pluck('code')->toArray(),
+                ]);
+
+                // Save default language translation
+                if ($defaultLanguage && isset($data['alt'])) {
+                    // First update the base alt column
+                    $record->updateQuietly(['alt' => $data['alt']]);
+                    \Log::info('Pushing default translation', [
+                        'code' => $defaultLanguage->code,
+                        'value' => $data['alt'],
+                    ]);
+                    // Then push translation
+                        $record->pushTranslateAttribute('alt', $data['alt'], $defaultLanguage->code);
+                }
+
+                // Save other language translations
+                foreach ($otherLanguages as $language) {
+                    $key = 'alt_text_' . $language->code;
+                    if (isset($data[$key])) {
+                            $record->pushTranslateAttribute('alt', $data[$key], $language->code);
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::error('Translation save error', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+            }
+        } else {
+            // Model doesn't support translations - update alt directly
+            $updateData['alt'] = $data['alt'] ?? '';
+            $record->updateQuietly($updateData);
+        }
+
+        Notification::make()
+            ->title(__('Media updated'))
+            ->body(__('The media has been updated successfully.'))
+            ->success()
+            ->send();
     }
 
     public static function getPages(): array

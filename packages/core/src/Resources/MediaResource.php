@@ -9,9 +9,7 @@ use Backstage\Translations\Laravel\Models\Language;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\ImageEntry;
 use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Support\Icons\Heroicon;
@@ -56,13 +54,7 @@ class MediaResource extends Resource
                             ->multiple(),
                     ])
                     ->action(function (array $data) {
-                        dd($data);
-                        // foreach ($data['media'] as $file) {
-                        //     $media = Media::create([
-                        //         'url' => $media['url'],
-                        //         'alt_text' => $media['alt_text'],
-                        //     ]);
-                        // }
+                        // TODO: Implement media upload logic
                     }),
             ])
             ->recordActions([
@@ -75,16 +67,7 @@ class MediaResource extends Resource
                     ->slideOver()
                     ->fillForm(fn (Media | Model $record) => self::getAltTextFormData($record))
                     ->action(fn (array $data, Media | Model $record) => self::saveAltText($data, $record))
-                    ->schema([
-                        // ImageEntry::make('url')
-                        //     ->label(__('Media'))
-                        //     ->formatStateUsing(fn ($state) => $state ? url($state) : null)
-                        //     ->height(200),
-                        Grid::make(2)
-                            ->schema([
-                                ...$altTextFormSchema,
-                            ]),
-                    ]),
+                    ->schema($altTextFormSchema),
             ]);
     }
 
@@ -96,16 +79,12 @@ class MediaResource extends Resource
 
         // Add default language first
         if ($languages['default']) {
-            $schema[] =
-                Grid::make(2)
-                    ->schema([
-                        TextInput::make('alt')
-                            ->label(__('Alt Text'))
-                            ->prefixIcon(country_flag($languages['default']->code), true)
-                            ->helperText(__('The alt text for the media in the default language. We can automatically translate this to other languages using AI.'))
-                            ->required()
-                            ->columnSpanFull(),
-                    ])->columnSpanFull();
+            $schema[] = TextInput::make('alt')
+                ->label(__('Alt Text'))
+                ->prefixIcon(country_flag($languages['default']->code), true)
+                ->helperText(__('The alt text for the media in the default language. We can automatically translate this to other languages using AI.'))
+                ->required()
+                ->columnSpanFull();
         }
 
         // Then add other languages
@@ -166,6 +145,5 @@ class MediaResource extends Resource
             ->title(__('Alt text updated'))
             ->body(__('The alt text has been updated for the media.'))
             ->send();
-
     }
 }
