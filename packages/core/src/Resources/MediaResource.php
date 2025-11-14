@@ -42,7 +42,7 @@ class MediaResource extends Resource
 
     public static function table(Table $table): Table
     {
-        $altTagsFormSchema = self::getAltTagsFormSchema();
+        $altTextFormSchema = self::getAltTextFormSchema();
 
         return parent::table($table)
             ->headerActions([
@@ -60,21 +60,21 @@ class MediaResource extends Resource
                         // foreach ($data['media'] as $file) {
                         //     $media = Media::create([
                         //         'url' => $media['url'],
-                        //         'alt_tags' => $media['alt_tags'],
+                        //         'alt_text' => $media['alt_text'],
                         //     ]);
                         // }
                     }),
             ])
             ->recordActions([
                 ...parent::table($table)->getRecordActions(),
-                Action::make('alt-tags')
-                    ->modalHeading(__('Manage alt tags for this media'))
+                Action::make('alt-text')
+                    ->modalHeading(__('Manage alt text for this media'))
                     ->hiddenLabel()
                     ->icon('heroicon-o-tag')
-                    ->tooltip(__('Manage alt tags'))
+                    ->tooltip(__('Manage alt text'))
                     ->slideOver()
-                    ->fillForm(fn (Media | Model $record) => self::getAltTagsFormData($record))
-                    ->action(fn (array $data, Media | Model $record) => self::saveAltTags($data, $record))
+                    ->fillForm(fn (Media | Model $record) => self::getAltTextFormData($record))
+                    ->action(fn (array $data, Media | Model $record) => self::saveAltText($data, $record))
                     ->schema([
                         // ImageEntry::make('url')
                         //     ->label(__('Media'))
@@ -82,13 +82,13 @@ class MediaResource extends Resource
                         //     ->height(200),
                         Grid::make(2)
                             ->schema([
-                                ...$altTagsFormSchema,
+                                ...$altTextFormSchema,
                             ]),
                     ]),
             ]);
     }
 
-    private static function getAltTagsFormSchema(): array
+    private static function getAltTextFormSchema(): array
     {
         $schema = [];
 
@@ -100,9 +100,9 @@ class MediaResource extends Resource
                 Grid::make(2)
                     ->schema([
                         TextInput::make('alt')
-                            ->label(__('Alt Tag'))
+                            ->label(__('Alt Text'))
                             ->prefixIcon(country_flag($languages['default']->code), true)
-                            ->helperText(__('The alt tag for the media in the default language. We can automatically translate this to other languages using AI.'))
+                            ->helperText(__('The alt text for the media in the default language. We can automatically translate this to other languages using AI.'))
                             ->required()
                             ->columnSpanFull(),
                     ])->columnSpanFull();
@@ -110,8 +110,8 @@ class MediaResource extends Resource
 
         // Then add other languages
         foreach ($languages['others'] as $language) {
-            $schema[] = TextInput::make('alt_tags_' . $language->code)
-                ->label(__('Alt Tag'))
+            $schema[] = TextInput::make('alt_text_' . $language->code)
+                ->label(__('Alt Text'))
                 ->suffixActions([
                     Action::make('translate_from_default')
                         ->icon(Heroicon::OutlinedLanguage)
@@ -121,7 +121,7 @@ class MediaResource extends Resource
 
                             $translator = Translator::translate($defaultAlt, $language->code);
 
-                            $set('alt_tags_' . $language->code, $translator);
+                            $set('alt_text_' . $language->code, $translator);
                         }),
                 ], true)
                 ->prefixIcon(country_flag($language->code), true);
@@ -130,7 +130,7 @@ class MediaResource extends Resource
         return $schema;
     }
 
-    private static function getAltTagsFormData(Media | Model $record): array
+    private static function getAltTextFormData(Media | Model $record): array
     {
         $languages = self::getLanguages();
 
@@ -139,13 +139,13 @@ class MediaResource extends Resource
         ];
 
         foreach ($languages['others'] as $language) {
-            $data['alt_tags_' . $language->code] = $record->getTranslatedAttribute('alt', $language->code) ?? '';
+            $data['alt_text_' . $language->code] = $record->getTranslatedAttribute('alt', $language->code) ?? '';
         }
 
         return $data;
     }
 
-    private static function saveAltTags(array $data, Media | Model $record): void
+    private static function saveAltText(array $data, Media | Model $record): void
     {
         $languages = self::getLanguages();
 
@@ -156,15 +156,15 @@ class MediaResource extends Resource
         $record->pushTranslateAttribute('alt', $data['alt'], $languages['default']->code);
 
         foreach ($languages['others'] as $language) {
-            $key = 'alt_tags_' . $language->code;
+            $key = 'alt_text_' . $language->code;
             if (isset($data[$key])) {
                 $record->pushTranslateAttribute('alt', $data[$key], $language->code);
             }
         }
 
         Notification::make()
-            ->title(__('Alt tags updated'))
-            ->body(__('The alt tags have been updated for the media.'))
+            ->title(__('Alt text updated'))
+            ->body(__('The alt text has been updated for the media.'))
             ->send();
 
     }
