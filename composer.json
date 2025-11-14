@@ -37,22 +37,6 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "backstage/redirects": "dev-release/1.x",
-        "backstage/translations": "^0.4.1",
-        "baspa/laravel-timezones": "^1.2",
-        "codewithdennis/filament-select-tree": "^4.0",
-        "filament/filament": "^4.0",
-        "nette/php-generator": "^4.1",
-        "saade/filament-adjacency-list": "^4.0",
-        "spatie/laravel-package-tools": "^1.18",
-        "spatie/once": "^3.1",
-        "spatie/schema-org": "^3.23",
-        "staudenmeir/laravel-adjacency-list": "^1.0"
-    },
-    "replace": {
-        "backstage/fields": "self.version",
-        "backstage/media": "self.version"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",

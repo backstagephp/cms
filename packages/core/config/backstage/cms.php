@@ -1,16 +1,13 @@
 <?php
 
-use Backstage\Media\MediaPlugin;
-use Backstage\Translations\Filament\TranslationsPlugin;
-
 return [
     'panel' => [
         'default' => true,
 
         'plugins' => [
             Backstage\Redirects\Filament\RedirectsPlugin::make(),
-            MediaPlugin::make(),
-            TranslationsPlugin::make(),
+            // Backstage\Media\MediaPlugin::make(),
+            // Backstage\Translations\Filament\TranslationsPlugin::make(),
         ],
 
         'resources' => [
