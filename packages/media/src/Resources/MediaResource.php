@@ -109,10 +109,6 @@ class MediaResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('original_filename')
-                    ->label(__('Original Filename'))
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('filename')
                     ->label(__('Filename'))
                     ->searchable()
                     ->sortable(),
@@ -131,6 +127,7 @@ class MediaResource extends Resource
                     ->hiddenLabel()
                     ->tooltip(__('View'))
                     ->slideOver()
+                    ->modalHeading(fn ($record) => $record->original_filename)
                     ->schema([
                         ...self::getFormSchema(),
                     ]),
