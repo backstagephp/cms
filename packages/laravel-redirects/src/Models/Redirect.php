@@ -11,7 +11,8 @@ use Illuminate\Support\Arr;
 
 class Redirect extends Model
 {
-    use HasFactory, HasUlids;
+    use HasFactory;
+    use HasUlids;
 
     protected $primaryKey = 'ulid';
 
@@ -28,7 +29,7 @@ class Redirect extends Model
         $destination = $this->destination;
 
         if ($request->query()) {
-            $destination .= (str($destination)->contains('?') ? '&' : '?').Arr::query($request->query());
+            $destination .= (str($destination)->contains('?') ? '&' : '?') . Arr::query($request->query());
         }
 
         return redirect($destination, $this->code)
