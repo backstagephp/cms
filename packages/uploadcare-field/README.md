@@ -1,4 +1,3 @@
-
 # Uploadcare Field component for the Backstage CMS.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/backstage/uploadcare-field.svg?style=flat-square)](https://packagist.org/packages/backstage/uploadcare-field)

@@ -13,7 +13,9 @@ jobs:
         package:
           - fields
           - media
+          - announcements
           - core
+          - laravel-translations
     steps:
       - uses: actions/checkout@v3
       - id: previous-tag

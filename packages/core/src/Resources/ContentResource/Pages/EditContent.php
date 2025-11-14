@@ -72,7 +72,7 @@ class EditContent extends EditRecord
         $languageActions = $languages
             ->map(fn (Language $language) => Action::make($language->code)
                 ->label($language->name)
-                ->icon(fn () => 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(base_path('vendor/backstage/cms/resources/img/flags/' . explode('-', $language->code)[0] . '.svg'))))
+                ->icon(fn () => 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(flag_path(explode('-', $language->code)[0]))))
                 ->modal(fn (Content $record) => ! $record->existingTranslation($language))
                 ->modalIcon(fn () => Heroicon::OutlinedLanguage)
                 ->modalHeading(fn () => __('Translate to ' . $language->name))

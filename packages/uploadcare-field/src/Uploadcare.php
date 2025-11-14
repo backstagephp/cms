@@ -158,6 +158,10 @@ class Uploadcare extends Base implements FieldContract
 
     public static function mutateFormDataCallback(Model $record, Field $field, array $data): array
     {
+        if (($field->field_type ?? '') !== 'uploadcare') {
+            return $data;
+        }
+
         if (! property_exists($record, 'valueColumn') || ! isset($record->values[$field->ulid])) {
             return $data;
         }
@@ -192,8 +196,8 @@ class Uploadcare extends Base implements FieldContract
     }
 
     public static function mutateBeforeSaveCallback(Model $record, Field $field, array $data): array
-    {
-        if (($field->field_type ?? '') !== 'uploadcare') {
+    {        
+        if (! property_exists($field, 'field_type') || $field->field_type !== 'uploadcare') {
             return $data;
         }
 

@@ -72,7 +72,7 @@ Follow these steps to contribute with local development.
 3. Clone your fork into your Laravel app's root directory.
 4. In the `/cms` directory, create a branch for your fix, e.g. `fix/stage-lights`.
 
-Install the packages in your app's `composer.json`:c0m
+Install the packages in your app's `composer.json`:
 
 ```json
 {
