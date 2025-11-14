@@ -57,6 +57,7 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: root
         run: |
+          cp -r packages theater/
           cd theater
           composer config minimum-stability dev
           php ../.github/scripts/generate-composer-repositories.php
