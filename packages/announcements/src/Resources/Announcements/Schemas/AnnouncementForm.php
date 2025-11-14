@@ -8,9 +8,11 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Text;
 use Filament\Schemas\Schema;
 use Filament\Support\Colors\ColorManager;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\HtmlString;
 
 class AnnouncementForm
 {
@@ -52,17 +54,23 @@ class AnnouncementForm
                     ->live()
                     ->prefixIcon(Heroicon::OutlinedCube, true)
                     ->prefixIconColor(fn (?string $state) => $state ?? 'gray')
-                    ->options(function () {
+                    ->options(function (Select $select) {
                         $colors = ColorManager::DEFAULT_COLORS;
 
                         return collect($colors)
                             ->keys()
-                            ->mapWithKeys(function ($key) {
+                            ->mapWithKeys(function ($key) use ($select) {
                                 return [
-                                    $key => $key,
+                                    $key => (string) Text::make(ucfirst($key))->color($key)->container($select->getContainer())->toHtmlString()
                                 ];
-                            });
+                            })
+                            ->toArray();
                     })
+                    ->searchable()
+                    ->preload()
+                    ->getOptionLabelsUsing(fn($value) => ucfirst($value))
+                    ->native(false)
+                    ->allowHtml()
                     ->required(),
             ]);
     }
