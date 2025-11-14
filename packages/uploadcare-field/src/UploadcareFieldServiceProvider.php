@@ -3,7 +3,6 @@
 namespace Backstage\UploadcareField;
 
 use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -25,7 +24,6 @@ class UploadcareFieldServiceProvider extends PackageServiceProvider
     {
         FilamentAsset::register([
             Css::make('uploadcare-field', __DIR__ . '/../resources/dist/uploadcare-field.css'),
-            Js::make('media-picker', __DIR__ . '/../resources/js/media-picker.js'),
         ], 'backstage/uploadcare-field');
     }
 

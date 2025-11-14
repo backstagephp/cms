@@ -50,49 +50,29 @@ class Uploadcare extends Base implements FieldContract
                 ->color('gray')
                 ->size('sm')
                 ->modalHeading(__('Select Media'))
+                ->modalWidth('Screen')
                 ->modalCancelActionLabel(__('Cancel'))
                 ->modalSubmitActionLabel(__('Select'))
-                ->action(function (Action $action, array $data) use ($name) {
+                ->action(function (Action $action, array $data, $livewire) use ($name, $input) {
+                    // Get the selected UUID from form data
                     $selectedMediaUuid = $data['selected_media_uuid'] ?? null;
 
-                    \Log::info('MediaPicker Action called', [
-                        'selectedMediaUuid' => $selectedMediaUuid,
-                        'fieldName' => $name,
-                        'formData' => $data,
-                    ]);
-
                     if ($selectedMediaUuid) {
-                        // Get the parent Uploadcare component
-                        $component = $action->getComponent();
-
-                        \Log::info('Component retrieved', [
-                            'component' => $component ? get_class($component) : null,
-                            'componentStatePath' => $component ? $component->getStatePath() : null,
-                            'currentState' => $component ? $component->getState() : null,
-                        ]);
-
-                        if ($component) {
-                            // Update the component's state
-                            $component->state($selectedMediaUuid);
-                            $component->callAfterStateUpdated();
-
-                            \Log::info('Component state updated', [
-                                'newState' => $component->getState(),
-                                'statePath' => $component->getStatePath(),
-                            ]);
-                        } else {
-                            \Log::warning('Component not found in Action');
-                        }
-                    } else {
-                        \Log::warning('No selectedMediaUuid in form data');
+                        // Update the Uploadcare component's state directly
+                        $input->state($selectedMediaUuid);
+                        $input->callAfterStateUpdated();
                     }
                 })
                 ->schema([
                     MediaGridPicker::make('media_picker')
+                        ->label('')
+                        ->hiddenLabel()
                         ->fieldName($name)
                         ->perPage(12),
                     \Filament\Forms\Components\Hidden::make('selected_media_uuid')
-                        ->default(null),
+                        ->default(null)
+                        ->dehydrated()
+                        ->live(),
                 ]),
         ]);
 

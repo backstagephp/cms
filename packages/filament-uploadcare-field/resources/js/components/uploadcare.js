@@ -29,11 +29,32 @@ export default function uploadcareField(config) {
         doneButtonHider: null,
         documentClassObserver: null,
 
-        init() {            
-            if (this.isContextAlreadyInitialized()) return;
+        init() {
+            if (this.isContextAlreadyInitialized()) {
+                return;
+            }
 
             this.markContextAsInitialized();
             this.applyTheme();
+            
+            // Set up state watcher early so it can catch external updates
+            this.setupStateWatcher();
+            
+            // Listen for external state updates from Action callback
+            this.$el.addEventListener('uploadcare-state-updated', (e) => {
+                const uuid = e.detail.uuid;
+                if (uuid && this.isInitialized) {
+                    this.loadFileFromUuid(uuid);
+                } else if (uuid) {
+                    // If not initialized yet, store it and load when ready
+                    this.$nextTick(() => {
+                        if (this.isInitialized) {
+                            this.loadFileFromUuid(uuid);
+                        }
+                    });
+                }
+            });
+            
             this.initUploadcare();
             this.setupThemeObservers();
             this.setupDoneButtonObserver();
@@ -126,7 +147,6 @@ export default function uploadcareField(config) {
 
         initializeUploader(retryCount = 0, maxRetries = 10) {
             if (retryCount >= maxRetries) {
-                console.error('Failed to initialize Uploadcare after maximum retries');
                 return;
             }
 
@@ -179,7 +199,7 @@ export default function uploadcareField(config) {
                     this.isLocalUpdate = true;
                     this.state = this.uploadedFiles;
                 }
-                this.setupStateWatcher();
+                // State watcher is already set up in init()
             });
         },
 
@@ -211,13 +231,11 @@ export default function uploadcareField(config) {
                                 parsed = JSON.parse(parsed);
                             } catch (e) {
                                 // If second parse fails, return the first parsed result
-                                console.warn('Failed to parse double-encoded JSON:', e);
                             }
                         }
                         
                         return parsed;
                     } catch (e) {
-                        console.warn('Failed to parse string as JSON:', e);
                         return value;
                     }
                 }
@@ -244,7 +262,6 @@ export default function uploadcareField(config) {
                 try {
                     filesArray = Array.from(parsedState);
                 } catch (e) {
-                    console.warn('Failed to convert Proxy to array:', e);
                     filesArray = [parsedState];
                 }
             } else if (!Array.isArray(parsedState)) {
@@ -262,7 +279,7 @@ export default function uploadcareField(config) {
                     const parsed = JSON.parse(filesArray[0]);
                     filesArray = Array.isArray(parsed) ? parsed : [parsed];
                 } catch (e) {
-                    console.warn('Failed to parse JSON string from filesArray[0]:', e);
+                    // Failed to parse JSON string
                 }
             }
             
@@ -289,14 +306,13 @@ export default function uploadcareField(config) {
                         addFile(parsedItem, index);
                         return;
                     } catch (e) {
-                        console.warn(`Failed to parse string item ${index} as JSON:`, e);
+                        // Failed to parse string item as JSON
                     }
                 }
                 
                 const url = typeof item === 'object' ? item.cdnUrl : item;
                 
                 if (!url || !this.isValidUrl(url)) {
-                    console.warn(`Invalid URL for file ${index}:`, url);
                     return;
                 }
                 
@@ -336,7 +352,7 @@ export default function uploadcareField(config) {
         },
 
         setupStateWatcher() {
-            this.$watch('state', (newValue) => {
+            this.$watch('state', (newValue, oldValue) => {
                 if (this.isLocalUpdate) {
                     this.isLocalUpdate = false;
                     return;
@@ -349,6 +365,13 @@ export default function uploadcareField(config) {
                 
                 // Skip if the new value is empty and we don't have any files
                 if ((!newValue || newValue === '[]' || newValue === '""') && !this.uploadedFiles) {
+                    return;
+                }
+                
+                // Check if newValue is a UUID string (not a URL or JSON)
+                const isUuidString = this.isUuidString(newValue);
+                if (isUuidString && this.isInitialized) {
+                    this.loadFileFromUuid(newValue);
                     return;
                 }
                 
@@ -434,6 +457,7 @@ export default function uploadcareField(config) {
                 
                 debounceTimer = setTimeout(() => {
                     const fileData = this.isWithMetadata ? e.detail : e.detail.cdnUrl;
+                    
                     try {
                         const currentFiles = this.getCurrentFiles();
                         const updatedFiles = this.updateFilesList(currentFiles, fileData);
@@ -445,7 +469,7 @@ export default function uploadcareField(config) {
                             form.dispatchEvent(new CustomEvent('form-processing-finished'));
                         }
                     } catch (error) {
-                        console.error('Error updating state after upload:', error);
+                        console.error('[Uploadcare] Error updating state after upload:', error);
                     }
                 }, this.isMultiple ? 200 : 100); // Longer debounce for multiple files
             };
@@ -623,6 +647,69 @@ export default function uploadcareField(config) {
             }
             
             return null;
+        },
+
+        isUuidString(value) {
+            if (!value || typeof value !== 'string') {
+                return false;
+            }
+            
+            // Check if it's a UUID format (with or without dashes)
+            const uuidRegex = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+            const uuidWithoutDashesRegex = /^[a-f0-9]{32}$/i;
+            
+            // Also check if it's not a URL or JSON
+            const isUrl = value.startsWith('http://') || value.startsWith('https://');
+            const isJson = (value.startsWith('[') || value.startsWith('{')) && value.includes('"');
+            
+            return (uuidRegex.test(value) || uuidWithoutDashesRegex.test(value)) && !isUrl && !isJson;
+        },
+
+        loadFileFromUuid(uuid) {
+            if (!this.isInitialized || !this.ctx) {
+                return;
+            }
+
+            const api = this.getUploadcareApi();
+            if (!api || typeof api.addFileFromUuid !== 'function') {
+                return;
+            }
+            
+            try {
+                // Use addFileFromUuid to load the file
+                api.addFileFromUuid(uuid);
+                
+                // The file-upload-success event will be triggered, which will update the state
+                // But we should also update the state immediately to reflect the UUID
+                this.isLocalUpdate = true;
+                
+                // Format the state based on whether we're using metadata or not
+                if (this.isMultiple) {
+                    const currentFiles = this.getCurrentFiles();
+                    // Check if UUID already exists in files
+                    const exists = currentFiles.some(file => {
+                        const fileUrl = typeof file === 'object' ? file.cdnUrl : file;
+                        return fileUrl && fileUrl.includes(uuid);
+                    });
+                    
+                    if (!exists) {
+                        // Add UUID as CDN URL format for now, will be updated when file loads
+                        const cdnUrl = `https://ucarecdn.com/${uuid}/`;
+                        const newFile = this.isWithMetadata ? { uuid, cdnUrl } : cdnUrl;
+                        currentFiles.push(newFile);
+                        this.uploadedFiles = JSON.stringify(this.formatFilesForState(currentFiles));
+                        this.state = this.uploadedFiles;
+                    }
+                } else {
+                    // Single file mode
+                    const cdnUrl = `https://ucarecdn.com/${uuid}/`;
+                    const newFile = this.isWithMetadata ? { uuid, cdnUrl } : cdnUrl;
+                    this.uploadedFiles = JSON.stringify(this.formatFilesForState([newFile]));
+                    this.state = this.uploadedFiles;
+                }
+            } catch (error) {
+                console.error('[Uploadcare] Error loading file from UUID', { uuid, error });
+            }
         }
     };
 }

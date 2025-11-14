@@ -16,6 +16,10 @@ class MediaGridPicker extends Component
     public int $perPage = 12;
 
     public ?string $selectedMediaId = null;
+    
+    public ?string $selectedMediaUuid = null;
+    
+    public string $search = '';
 
     public function mount(string $fieldName, int $perPage = 12): void
     {
@@ -29,6 +33,11 @@ class MediaGridPicker extends Component
         $mediaModel = config('backstage.media.model', 'Backstage\\Models\\Media');
 
         $query = $mediaModel::query();
+
+        // Apply search filter
+        if (!empty($this->search)) {
+            $query->where('original_filename', 'like', '%' . $this->search . '%');
+        }
 
         return $query->paginate($this->perPage)
             ->through(function ($media) {
@@ -53,6 +62,11 @@ class MediaGridPicker extends Component
         $this->resetPage();
     }
 
+    public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
+
     public function selectMedia(array $media): void
     {
         $this->selectedMediaId = $media['id'];
@@ -67,7 +81,10 @@ class MediaGridPicker extends Component
             }
         }
 
-        // Update the hidden field value via Livewire dispatch
+        // Store the UUID in the component state
+        $this->selectedMediaUuid = $uuid;
+
+        // Dispatch event to update hidden field in modal
         $this->dispatch(
             'set-hidden-field',
             fieldName: 'selected_media_uuid',
