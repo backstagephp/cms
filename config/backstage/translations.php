@@ -9,4 +9,10 @@ return [
     'navigation' => [
         'group' => 'Manage',
     ],
+
+    'eloquent' => [
+        'translatable-models' => [
+            \Backstage\Models\Media::class,
+        ],
+    ],
 ];

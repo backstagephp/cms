@@ -58,7 +58,7 @@ return [
         'navigation_icon' => 'heroicon-o-photo',
         'navigation_sort' => null,
         'navigation_count_badge' => false,
-        'resource' => \Backstage\Media\Resources\MediaResource::class,
+        'resource' => \Backstage\Resources\MediaResource::class,
     ],
 
     'file_upload' => [

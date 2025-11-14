@@ -3,13 +3,16 @@
 namespace Backstage\Models;
 
 use Backstage\Shared\HasPackageFactory;
+use Backstage\Translations\Laravel\Contracts\TranslatesAttributes;
+use Backstage\Translations\Laravel\Models\Concerns\HasTranslatableAttributes;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Media extends Model
+class Media extends Model implements TranslatesAttributes
 {
     use HasPackageFactory;
+    use HasTranslatableAttributes;
     use HasUlids;
 
     protected $primaryKey = 'ulid';
@@ -20,7 +23,16 @@ class Media extends Model
 
     protected function casts(): array
     {
-        return [];
+        return [
+            'alt' => 'string',
+        ];
+    }
+
+    public function getTranslatableAttributes(): array
+    {
+        return [
+            'alt',
+        ];
     }
 
     public function site(): BelongsTo
