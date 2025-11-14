@@ -71,10 +71,5 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "repositories": {
-        "laravel-redirects": {
-            "type": "vcs",
-            "url": "git@github.com:backstagephp/laravel-redirects.git"
-        }
-    }
+    "repositories": []
 }
