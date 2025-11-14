@@ -1,0 +1,83 @@
+{
+    "name": "backstage/announcements",
+    "description": "This is my package backstage-announcements",
+    "keywords": [
+        "Backstage",
+        "laravel",
+        "filamentphp",
+        "backstage-announcements"
+    ],
+    "homepage": "https://github.com/backstagephp/announcements",
+    "support": {
+        "issues": "https://github.com/backstagephp/announcements/issues",
+        "source": "https://github.com/backstagephp/announcements"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Manoj Hortulanus",
+            "email": "manoj@backstagephp.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "filament/filament": "^4.0",
+        "spatie/laravel-package-tools": "^1.15.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^8.0",
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-arch": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0",
+        "pestphp/pest-plugin-livewire": "^3.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "rector/rector": "^2.0",
+        "spatie/laravel-ray": "^1.26"
+    },
+    "autoload": {
+        "psr-4": {
+            "Backstage\\Announcements\\": "src/",
+            "Backstage\\Announcements\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Backstage\\Announcements\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
+        "analyse": "phpstan analyse",
+        "lint": "pint",
+        "refactor": "rector",
+        "test": "pest",
+        "test:lint": "pint --test",
+        "test:refactor": "rector --dry-run"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Backstage\\Announcements\\AnnouncementsServiceProvider"
+            ],
+            "aliases": {
+                "Announcements": "Backstage\\Announcements\\Facades\\Announcements"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
