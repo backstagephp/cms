@@ -61,5 +61,6 @@ jobs:
           composer config minimum-stability dev
           git clone --branch ${{ steps.extract_branch.outputs.branch }} https://github.com/backstagephp/cms.git
           composer config repositories.backstage-packages path "cms/packages/*"
+          composer require backstage/cms:dev-${{ steps.extract_branch.outputs.branch }}
           composer update --no-interaction
           php artisan backstage:install
