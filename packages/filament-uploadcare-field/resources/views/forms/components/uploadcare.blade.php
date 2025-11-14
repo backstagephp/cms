@@ -1,4 +1,6 @@
-<div wire:key="uploadcare-wrapper-{{ $getStatePath() }}">
+<div 
+    wire:key="uploadcare-wrapper-{{ $getStatePath() }}"
+>
     <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
         @php
             $sourceList = $field->getSourceList();

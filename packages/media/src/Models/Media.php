@@ -2,6 +2,8 @@
 
 namespace Backstage\Media\Models;
 
+use Backstage\Translations\Laravel\Contracts\TranslatesAttributes;
+use Backstage\Translations\Laravel\Models\Concerns\HasTranslatableAttributes;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
@@ -12,8 +14,27 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class Media extends Model
+/**
+ * @property string $ulid
+ * @property string $filename
+ * @property string $path
+ * @property string $mime_type
+ * @property int $size
+ * @property int|null $width
+ * @property int|null $height
+ * @property string|null $alt
+ * @property array|null $metadata
+ * @property int|null $uploaded_by
+ * @property string|null $tenant_ulid
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read string $humanReadableSize
+ * @property-read string $src
+ */
+class Media extends Model implements TranslatesAttributes
 {
+    use HasTranslatableAttributes;
     use HasUlids;
     use SoftDeletes;
 
@@ -33,12 +54,20 @@ class Media extends Model
         'created_at' => 'datetime:d-m-Y H:i',
         'updated_at' => 'datetime:d-m-Y H:i',
         'metadata' => 'array',
+        'alt' => 'string',
     ];
 
     protected $appends = [
         'humanReadableSize',
         'src',
     ];
+
+    public function getTranslatableAttributes(): array
+    {
+        return [
+            'alt',
+        ];
+    }
 
     public function getRouteKeyName(): string
     {
@@ -68,7 +97,7 @@ class Media extends Model
             if ($tenantRelationship && class_exists($tenantModel)) {
                 $currentTenant = Filament::getTenant();
 
-                if ($currentTenant) {
+                if ($currentTenant && property_exists($currentTenant, 'ulid')) {
                     $model->{$tenantRelationship . '_ulid'} = $currentTenant->ulid;
                 }
             }

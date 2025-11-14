@@ -19,6 +19,8 @@ class CreateMedia extends CreateRecord
 
     public function handleRecordCreation(array $data): Model
     {
+        $firstMedia = null;
+
         foreach ($data['media'] as $file) {
             // Get the full path on the configured disk
             $fullPath = Storage::disk(config('backstage.media.disk'))->path($file);
@@ -53,8 +55,9 @@ class CreateMedia extends CreateRecord
                 }
             }
 
-            $first = Media::create([
-                'site_ulid' => Filament::getTenant()->ulid,
+            $tenant = Filament::getTenant();
+            $media = Media::create([
+                'site_ulid' => $tenant && property_exists($tenant, 'ulid') ? $tenant->ulid : null,
                 'disk' => config('backstage.media.disk'),
                 'uploaded_by' => auth()->id(),
                 'filename' => $filename,
@@ -66,9 +69,13 @@ class CreateMedia extends CreateRecord
                 'checksum' => md5_file($fullPath),
                 'public' => config('backstage.media.visibility') === 'public', // TODO: Should be configurable in the form itself
             ]);
+
+            if ($firstMedia === null) {
+                $firstMedia = $media;
+            }
         }
 
-        return $first;
+        return $firstMedia ?? Media::first();
         // return static::getModel()::create($data);
     }
 }

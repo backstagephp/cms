@@ -81,7 +81,7 @@ class MediaServiceProvider extends PackageServiceProvider
         }
 
         Relation::enforceMorphMap([
-            'media' => 'Backstage\Media\Models\Media',
+            'media' => config('backstage.media.model'),
         ]);
 
         // Testing
@@ -146,6 +146,7 @@ class MediaServiceProvider extends PackageServiceProvider
             'create_media_table',
             'create_media_relationships_table',
             'add_tenant_aware_column_to_media_table',
+            'add_alt_column_to_media_table',
         ];
     }
 }

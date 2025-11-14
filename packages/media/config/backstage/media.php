@@ -21,7 +21,7 @@ return [
 
     'directory' => 'media',
 
-    'disk' => env('FILAMENT_FILESYSTEM_DISK', 'public'),
+    'disk' => config('filesystems.default', 'public'),
 
     'should_preserve_filenames' => false,
 

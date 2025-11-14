@@ -1,3 +1,4 @@
+
 <?php
 
 namespace Backstage\Media\Pages\Media;
@@ -14,7 +15,6 @@ use Filament\Pages\Page;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Livewire\WithPagination;
 
 class Library extends Page implements HasForms
@@ -90,7 +90,7 @@ class Library extends Page implements HasForms
 
     public static function getNavigationLabel(): string
     {
-        return MediaPlugin::get()->getNavigationLabel() ?? Str::title(static::getPluralModelLabel()) ?? Str::title(static::getModelLabel());
+        return MediaPlugin::get()->getNavigationLabel() ?? __('Media Library');
     }
 
     public static function getNavigationIcon(): string

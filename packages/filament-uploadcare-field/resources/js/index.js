@@ -61,7 +61,6 @@ export default function uploadcareField(config) {
             const initializeUploader = () => {
                 this.ctx = document.querySelector(`uc-upload-ctx-provider[ctx-name="${this.statePath}"]`);
 
-                console.log('bbb');
                 // Try to get the API
                 let api;
                 try {

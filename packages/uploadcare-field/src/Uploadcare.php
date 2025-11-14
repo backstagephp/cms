@@ -7,6 +7,8 @@ use Backstage\Fields\Fields\Base;
 use Backstage\Fields\Models\Field;
 use Backstage\Uploadcare\Enums\Style;
 use Backstage\Uploadcare\Forms\Components\Uploadcare as Input;
+use Backstage\UploadcareField\Forms\Components\MediaGridPicker;
+use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -14,6 +16,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,6 +41,40 @@ class Uploadcare extends Base implements FieldContract
             input: Input::make($name)->withMetadata()->removeCopyright(),
             field: $field
         );
+
+        $input = $input->hintActions([
+            Action::make('mediaPicker')
+                ->hiddenLabel()
+                ->tooltip(__('Select from Media'))
+                ->icon(Heroicon::Photo)
+                ->color('gray')
+                ->size('sm')
+                ->modalHeading(__('Select Media'))
+                ->modalWidth('Screen')
+                ->modalCancelActionLabel(__('Cancel'))
+                ->modalSubmitActionLabel(__('Select'))
+                ->action(function (Action $action, array $data, $livewire) use ($input) {
+                    // Get the selected UUID from form data
+                    $selectedMediaUuid = $data['selected_media_uuid'] ?? null;
+
+                    if ($selectedMediaUuid) {
+                        // Update the Uploadcare component's state directly
+                        $input->state($selectedMediaUuid);
+                        $input->callAfterStateUpdated();
+                    }
+                })
+                ->schema([
+                    MediaGridPicker::make('media_picker')
+                        ->label('')
+                        ->hiddenLabel()
+                        ->fieldName($name)
+                        ->perPage(12),
+                    \Filament\Forms\Components\Hidden::make('selected_media_uuid')
+                        ->default(null)
+                        ->dehydrated()
+                        ->live(),
+                ]),
+        ]);
 
         $input = $input->label($field->name ?? self::getDefaultConfig()['label'] ?? null)
             ->uploaderStyle(Style::tryFrom($field->config['uploaderStyle'] ?? null) ?? Style::tryFrom(self::getDefaultConfig()['uploaderStyle']))

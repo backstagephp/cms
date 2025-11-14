@@ -23,7 +23,7 @@ class EditMedia extends EditRecord
             Action::make('preview')
                 ->label(__('Preview'))
                 ->color('gray')
-                ->url($this->record->url, shouldOpenInNewTab: true),
+                ->url(fn () => (is_object($this->record) && property_exists($this->record, 'url')) ? $this->record->url : null, shouldOpenInNewTab: true),
             DeleteAction::make(),
         ];
     }
