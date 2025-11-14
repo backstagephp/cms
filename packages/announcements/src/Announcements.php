@@ -23,7 +23,13 @@ class Announcements
             return;
         }
 
-        Announcement::all()->each(function ($announcement) {
+        Announcement::query()
+            ->get()
+            ->each(function ($announcement) {
+                if(! $announcement->isActive()) {
+                    return;
+                }
+
             collect($announcement->scopes)->each(function ($scope) use ($announcement) {
                 $instance = new $scope;
 

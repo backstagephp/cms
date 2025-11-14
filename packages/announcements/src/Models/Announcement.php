@@ -20,10 +20,14 @@ class Announcement extends Model
         'content',
         'scopes',
         'color',
+        'start_date',
+        'end_date',
     ];
 
     protected $casts = [
         'scopes' => 'array',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
     ];
 
     protected static function boot()
@@ -61,4 +65,32 @@ class Announcement extends Model
             ->where('user_id', $userId)
             ->exists();
     }
+
+    public function isActive(): bool
+    {
+        $now = now();
+    
+        // No dates → active
+        if (!$this->start_date && !$this->end_date) {
+            return true;
+        }
+    
+        // Inside full range → active
+        if ($this->start_date && $this->end_date ) {
+            return $now->between($this->start_date, $this->end_date, false);
+        }
+    
+        // Start in past → active
+        if ($this->start_date) {
+            return $now->gte($this->start_date);
+        }
+    
+        // End in future → active
+        if ($this->end_date) {
+            return $now->lte($this->end_date);
+        }
+    
+        return true; // Your rules: if none match, still true
+    }    
+
 }
