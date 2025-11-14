@@ -59,6 +59,6 @@ jobs:
         run: |
           cd theater
           composer config minimum-stability dev
-          composer config repositories.backstage-cms path ../cms/packages/core
+          composer config repositories.backstage-cms path cms/packages/*
           composer require backstage/cms:dev-${{ steps.extract_branch.outputs.branch }}
           php artisan backstage:install
